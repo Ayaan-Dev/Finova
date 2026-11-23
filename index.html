@@ -1,0 +1,1094 @@
+<meta charset="utf-8">
+<title>FINOVA Smart Expense Tracker</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<style>
+/* Layout: presentation shell (sticky section nav, wide gallery of 390×844 phones) around an app token system that each phone scopes itself. */
+:root{
+  --page:#F2F3F8; --panel:#FFFFFF; --ink:#15172C; --muted:#5D657B; --line:#E2E4EE; --accent:#635BFF; --accent-ink:#473CE3; --chip:#ECEBFF; --bezel:#11132A; --code:#F6F7FB;
+  --font:'Plus Jakarta Sans','Inter',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --mono:ui-monospace,'SF Mono','Cascadia Code',Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--page:#090B15;--panel:#111427;--ink:#EEF0F8;--muted:#9CA3BA;--line:#23273F;--accent:#8A84FF;--accent-ink:#B9B4FF;--chip:#211E45;--bezel:#2C3050;--code:#0D1020;color-scheme:dark}}
+:root[data-theme="dark"]{--page:#090B15;--panel:#111427;--ink:#EEF0F8;--muted:#9CA3BA;--line:#23273F;--accent:#8A84FF;--accent-ink:#B9B4FF;--chip:#211E45;--bezel:#2C3050;--code:#0D1020;color-scheme:dark}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}}
+body{background:var(--page);color:var(--ink);font-family:var(--font);font-size:15px;line-height:1.55;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 64px}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--page)}
+.wrap{max-width:1360px;margin:0 auto}
+a{color:var(--accent-ink)}
+h1,h2,h3,h4{text-wrap:balance;margin:0;letter-spacing:-.02em}
+p{margin:0}
+.eyebrow{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--accent-ink)}
+.lede{color:var(--muted);max-width:68ch;font-size:16px}
+/* top nav */
+.topnav{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:color-mix(in srgb,var(--page) 88%,transparent);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);margin:0 calc(-1*max(16px,env(safe-area-inset-left,0px)))}
+.topnav .in{max-width:1360px;margin:0 auto;display:flex;align-items:center;gap:20px;padding:12px max(16px,env(safe-area-inset-right,0px)) 12px max(16px,env(safe-area-inset-left,0px))}
+.brand{display:flex;align-items:center;gap:8px;font-weight:800;letter-spacing:.12em;font-size:15px;color:var(--ink);text-decoration:none;flex:none}
+.brand svg{width:26px;height:26px}
+.navlinks{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;min-width:0}
+.navlinks a{flex:none;text-decoration:none;color:var(--muted);font-weight:600;font-size:13px;padding:8px 12px;border-radius:10px}
+.navlinks a:hover,.navlinks a:focus-visible{background:var(--chip);color:var(--accent-ink);outline:none}
+section.block{padding-top:72px;scroll-margin-top:64px}
+.shead{display:grid;gap:10px;margin-bottom:28px}
+.shead h2{font-size:clamp(26px,3.4vw,36px);font-weight:800}
+/* hero */
+.hero{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:40px;align-items:center;padding-top:48px}
+.hero h1{font-size:clamp(40px,6vw,68px);font-weight:800;letter-spacing:-.035em;line-height:1.02}
+.hero h1 span{color:var(--accent-ink)}
+.facts{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
+.fact{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px 14px;font-size:13px;color:var(--muted)}
+.fact b{display:block;color:var(--ink);font-size:18px;font-variant-numeric:tabular-nums}
+.hero-phones{display:flex;gap:18px;justify-content:center;align-items:flex-start}
+.hero-phones .pw:nth-child(2){margin-top:60px}
+.hero-phones .pw{zoom:.66}
+.hero-phones{min-width:0}
+@media (max-width:1240px){.hero-phones .pw:nth-child(2){display:none}}
+.note{border:1px solid var(--line);background:var(--panel);border-radius:14px;padding:14px 16px;font-size:14px;color:var(--muted)}
+.note b{color:var(--ink)}
+@media (max-width:900px){.hero{grid-template-columns:1fr}.hero-phones .pw:nth-child(2){display:none}}
+/* gallery */
+.group-title{display:flex;align-items:baseline;gap:12px;margin:40px 0 18px;border-top:1px solid var(--line);padding-top:20px}
+.group-title h3{font-size:20px}
+.group-title span{color:var(--muted);font-size:14px}
+.gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(316px,1fr));gap:36px 24px}
+.shot{display:grid;gap:12px;justify-items:center;min-width:0}
+.shot figcaption{width:316px;max-width:100%;display:grid;gap:2px}
+.shot .num{font-size:12px;font-weight:700;color:var(--accent-ink);letter-spacing:.06em}
+.shot .ttl{font-weight:700;font-size:15px}
+.shot .cap{font-size:13px;color:var(--muted)}
+.pw{zoom:.78;flex:none;cursor:pointer;border-radius:54px;transition:transform .2s}
+.pw:focus-visible{outline:3px solid var(--accent);outline-offset:6px}
+.pw.static{cursor:default}
+@media (max-width:420px){.pw{zoom:.72}.shot figcaption{width:290px}}
+/* ---------- APP TOKENS (scoped) ---------- */
+.app{--bg:#F8F9FD;--sf:#FFFFFF;--sf2:#F1F2F8;--inv:#15172C;--oninv:#F8F9FD;--pr:#635BFF;--prd:#473CE3;--acc:#AFA8FF;--tint:#EEEDFF;--tx:#15172C;--tx2:#6E768C;--tx3:#A3A9BA;--txb:#473CE3;--bd:#E9EBF3;--bd2:#D4D7E3;--ok:#18B987;--okt:#0B7D59;--oktint:#E6F8F2;--er:#F06D73;--ert:#C9434A;--ertint:#FEEEEF;--wn:#F5B84B;--wnt:#9A6A12;--wntint:#FEF6E6;--onpr:#FFFFFF;
+ --c-food:#FF8A4C;--c-shopping:#E25DB0;--c-transport:#3BA3F5;--c-bills:#635BFF;--c-entertainment:#9B5CF6;--c-health:#18B987;--c-education:#E0A23A;--c-other:#8A91A6;--c-income:#18B987;--c-savings:#635BFF;
+ --sh:0 4px 24px rgba(21,23,44,.06);--sh2:0 12px 28px -4px rgba(71,60,227,.30);--sh3:0 -8px 40px rgba(21,23,44,.16);
+ --grad:linear-gradient(135deg,#6B63FF 0%,#4F45EA 55%,#3A2FC4 100%);
+ font-family:var(--font);color:var(--tx);background:var(--bg)}
+.app.dk{--bg:#0B0D1A;--sf:#151829;--sf2:#1E2238;--inv:#F2F3FA;--oninv:#0B0D1A;--pr:#7C75FF;--prd:#5B52F0;--acc:#AFA8FF;--tint:#25224A;--tx:#F2F3FA;--tx2:#A1A8BE;--tx3:#6B7290;--txb:#B4AFFF;--bd:#262A44;--bd2:#363B5A;--ok:#2FD39E;--okt:#4BE0AE;--oktint:#10302A;--er:#FF8A8F;--ert:#FF9CA0;--ertint:#3A1C24;--wn:#F7C66A;--wnt:#F7C66A;--wntint:#3A2E16;
+ --c-food:#FF9A63;--c-shopping:#EE74C0;--c-transport:#5AB3F7;--c-bills:#8C86FF;--c-entertainment:#AD78F8;--c-health:#2FD39E;--c-education:#F7C66A;--c-other:#9AA1B8;--c-income:#2FD39E;--c-savings:#8C86FF;
+ --sh:0 4px 24px rgba(0,0,0,.35);--sh2:0 12px 28px -4px rgba(0,0,0,.5);--sh3:0 -8px 40px rgba(0,0,0,.5);
+ --grad:linear-gradient(135deg,#3B34B8 0%,#2A2390 55%,#1C1766 100%)}
+.phone{width:390px;height:844px;position:relative;overflow:hidden;transform:translateZ(0);border-radius:46px;box-shadow:0 0 0 9px var(--bezel),0 0 0 10px color-mix(in srgb,var(--bezel) 60%,#888),0 40px 80px -30px rgba(20,20,60,.45);isolation:isolate}
+.scr{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;scrollbar-width:none;background:var(--bg)}
+.scr::-webkit-scrollbar{display:none}
+.scr.withnav{padding-bottom:110px}
+.anim-in{animation:scrIn .24s cubic-bezier(.2,.8,.2,1)}
+@keyframes scrIn{from{opacity:0;transform:translateX(14px)}to{opacity:1;transform:none}}
+.app svg.ic{width:24px;height:24px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.app .s16{width:16px;height:16px}.app .s18{width:18px;height:18px}.app .s20{width:20px;height:20px}.app .s22{width:22px;height:22px}.app .s28{width:28px;height:28px}.app .s40{width:40px;height:40px}
+.app button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer;text-align:inherit}
+.app button:focus-visible,.app [tabindex]:focus-visible,.app input:focus-visible{outline:2px solid var(--pr);outline-offset:2px}
+.sb{height:47px;display:flex;justify-content:space-between;align-items:center;padding:14px 28px 8px 36px;font-weight:600;font-size:15px;color:var(--tx)}
+.sb.inv{color:#fff}
+.sb .ind{display:flex;gap:6px;align-items:center}
+.sig{display:flex;gap:2px;align-items:flex-end}.sig i{width:3px;background:currentColor;border-radius:1px}
+.bat{width:25px;height:12px;border:1px solid color-mix(in srgb,currentColor 40%,transparent);border-radius:4px;padding:1.5px}.bat i{display:block;height:100%;width:80%;background:currentColor;border-radius:2px}
+.pad{padding:8px 24px 24px;display:flex;flex-direction:column;gap:20px}
+.row{display:flex;align-items:center;gap:12px}
+.between{justify-content:space-between}
+.col{display:flex;flex-direction:column}
+.grow{flex:1;min-width:0}
+.t-display{font-size:38px;font-weight:800;line-height:46px;letter-spacing:-1.2px}
+.t-h1{font-size:28px;font-weight:700;line-height:36px;letter-spacing:-.6px}
+.t-h2{font-size:22px;font-weight:700;line-height:30px;letter-spacing:-.3px}
+.t-h3{font-size:18px;font-weight:600;line-height:26px;letter-spacing:-.2px}
+.t-bl{font-size:16px;line-height:24px}
+.t-b{font-size:14px;line-height:21px}
+.t-bm{font-size:14px;line-height:21px;font-weight:500}
+.t-bs{font-size:14px;line-height:21px;font-weight:600}
+.t-cap{font-size:12px;line-height:16px;font-weight:500;letter-spacing:.1px}
+.t-over{font-size:11px;line-height:14px;font-weight:700;letter-spacing:.8px;text-transform:uppercase}
+.amt-xl{font-size:36px;font-weight:800;line-height:44px;letter-spacing:-1.2px;font-variant-numeric:tabular-nums}
+.amt-l{font-size:24px;font-weight:700;line-height:32px;letter-spacing:-.6px;font-variant-numeric:tabular-nums}
+.amt-m{font-size:16px;font-weight:700;line-height:22px;font-variant-numeric:tabular-nums}
+.amt-s{font-size:14px;font-weight:600;line-height:20px;font-variant-numeric:tabular-nums}
+.c2{color:var(--tx2)}.c3{color:var(--tx3)}.cb{color:var(--txb)}.cok{color:var(--okt)}.cer{color:var(--ert)}.cwn{color:var(--wnt)}
+.card{background:var(--sf);border-radius:20px;padding:20px;box-shadow:var(--sh);display:flex;flex-direction:column;gap:16px}
+.card.flat{box-shadow:none;border:1px solid var(--bd)}
+.hdr{display:flex;align-items:center;justify-content:space-between;padding:4px 20px;height:56px}
+.hdr h2{font-size:18px;font-weight:600;letter-spacing:-.2px}
+.ib{width:44px;height:44px;border-radius:22px;display:grid;place-items:center;background:var(--sf);border:1px solid var(--bd);color:var(--tx);position:relative;flex:none}
+.ib.ghost{background:none;border:0}
+.ib .dot{position:absolute;top:10px;right:11px;width:8px;height:8px;border-radius:4px;background:var(--er);border:2px solid var(--sf)}
+.tile{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;flex:none;color:var(--c);background:color-mix(in srgb,var(--c) 14%,transparent)}
+.tile svg.ic{width:22px;height:22px}
+.tile.lg{width:64px;height:64px;border-radius:20px}.tile.lg svg.ic{width:30px;height:30px}
+.tile.sm{width:36px;height:36px;border-radius:12px}.tile.sm svg.ic{width:18px;height:18px}
+.btn{white-space:nowrap;height:52px;border-radius:16px;display:flex;align-items:center;justify-content:center;gap:8px;font-size:15px;font-weight:600;padding:0 24px;width:100%;transition:transform .18s,background .18s}
+.btn:active{transform:scale(.98)}
+.btn.pri{background:var(--pr);color:var(--onpr);box-shadow:var(--sh2)}
+.btn.pri:hover{background:var(--prd)}
+.btn.sec{background:var(--tint);color:var(--txb)}
+.btn.ter{color:var(--txb)}
+.btn.des{background:var(--ert);color:#fff}
+.app.dk .btn.des{background:#C9434A}
+.btn.dis{background:var(--sf2);color:var(--tx3);box-shadow:none;cursor:not-allowed}
+.btn.sm{height:40px;border-radius:12px;font-size:14px;padding:0 16px;width:auto}
+.spin{width:18px;height:18px;border-radius:50%;border:2.5px solid currentColor;border-right-color:transparent;animation:sp 0.8s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+.seg{display:flex;background:var(--sf2);border-radius:12px;padding:4px;gap:4px}
+.seg button{flex:1;height:36px;border-radius:10px;font-size:14px;font-weight:500;color:var(--tx2);display:grid;place-items:center;transition:background .2s}
+.seg button.on{background:var(--sf);color:var(--tx);font-weight:600;box-shadow:var(--sh)}
+.app.dk .seg button.on{background:var(--bd2)}
+.chips{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:0 -24px;padding:2px 24px}
+.chips::-webkit-scrollbar{display:none}
+.chip{height:40px;border-radius:20px;display:inline-flex;align-items:center;gap:8px;padding:0 14px 0 8px;background:var(--sf);border:1px solid var(--bd);font-size:14px;font-weight:500;white-space:nowrap;flex:none}
+.chip .tile{width:28px;height:28px;border-radius:10px}.chip .tile svg.ic{width:16px;height:16px}
+.chip.on{background:var(--pr);border-color:var(--pr);color:#fff;font-weight:600}
+.chip.on .tile{background:rgba(255,255,255,.2);color:#fff}
+.chip.plain{padding:0 16px}
+.field{display:flex;flex-direction:column;gap:8px}
+.field label,.field .lbl{font-size:14px;font-weight:600}
+.inp{height:52px;border-radius:14px;background:var(--sf);border:1px solid var(--bd);display:flex;align-items:center;gap:10px;padding:0 16px;color:var(--tx2)}
+.inp input{border:0;background:none;font:inherit;font-size:16px;color:var(--tx);flex:1;min-width:0;outline:none}
+.inp .v{font-size:16px;color:var(--tx);flex:1;min-width:0}
+.inp.focus{border:1.5px solid var(--pr);box-shadow:0 0 0 4px color-mix(in srgb,var(--pr) 22%,transparent);color:var(--pr)}
+.inp.err{border:1.5px solid var(--ert);background:var(--ertint);color:var(--ert)}
+.help{font-size:12px;font-weight:500;color:var(--tx2);display:flex;gap:6px;align-items:center}
+.help.err{color:var(--ert)}
+.list{display:flex;flex-direction:column}
+.tx{display:flex;align-items:center;gap:12px;padding:12px 8px;border-radius:14px;transition:background .18s;width:100%}
+.tx:hover,.tx:active{background:var(--sf2)}
+.tx .r{text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:2px}
+.pos{color:var(--okt)}
+.bar{height:8px;border-radius:4px;background:var(--sf2);overflow:hidden}
+.bar i{display:block;height:100%;border-radius:4px;background:var(--pr);transition:width .6s cubic-bezier(.2,.8,.2,1)}
+.pill{display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 10px;border-radius:12px;font-size:12px;font-weight:600;white-space:nowrap}
+.pill.ok{background:var(--oktint);color:var(--okt)}.pill.wn{background:var(--wntint);color:var(--wnt)}.pill.er{background:var(--ertint);color:var(--ert)}.pill.br{background:var(--tint);color:var(--txb)}.pill.nt{background:var(--sf2);color:var(--tx2)}
+.navb{position:fixed;left:0;right:0;bottom:0;height:96px;background:var(--sf);border-top:1px solid var(--bd);display:flex;justify-content:space-between;align-items:flex-start;padding:8px 8px 28px;z-index:5}
+.navb button{width:70px;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:12px;font-weight:500;color:var(--tx2)}
+.navb .ind{padding:4px 16px;border-radius:14px;display:grid;place-items:center}
+.navb button.on{color:var(--txb);font-weight:700}
+.navb button.on .ind{background:var(--tint);color:var(--pr)}
+.navb .add{width:48px;height:48px;border-radius:24px;background:var(--pr);color:#fff;display:grid;place-items:center;box-shadow:var(--sh2)}
+.navb button.addb{gap:2px}
+.homebar{position:fixed;bottom:8px;left:50%;transform:translateX(-50%);width:134px;height:5px;border-radius:3px;background:var(--tx);z-index:6}
+.homebar.inv{background:#fff}
+.toast{position:fixed;left:24px;right:24px;bottom:112px;background:var(--inv);color:var(--oninv);border-radius:16px;padding:14px 16px;display:flex;gap:12px;align-items:center;box-shadow:var(--sh);z-index:8;font-size:14px;font-weight:500;animation:toastIn .26s cubic-bezier(.2,.8,.2,1)}
+.toast.nonav{bottom:40px}
+@keyframes toastIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.toast .ti{width:28px;height:28px;border-radius:14px;display:grid;place-items:center;flex:none;color:var(--inv)}
+.toast b{color:var(--acc);font-weight:600;margin-left:auto}
+.app.dk .toast b{color:var(--prd)}
+.scrim{position:fixed;inset:0;background:rgba(11,13,26,.48);z-index:9;display:grid;place-items:center;animation:fade .2s}
+@keyframes fade{from{opacity:0}}
+.dialog{width:326px;background:var(--sf);border-radius:24px;padding:24px;display:flex;flex-direction:column;gap:16px;align-items:center;text-align:center;box-shadow:var(--sh3);animation:pop .24s cubic-bezier(.2,.8,.2,1)}
+@keyframes pop{from{opacity:0;transform:scale(.94)}}
+.sheet{position:absolute;left:0;right:0;bottom:0;background:var(--sf);border-radius:28px 28px 0 0;padding:12px 24px 40px;box-shadow:var(--sh3);z-index:10}
+.grab{width:40px;height:5px;border-radius:3px;background:var(--bd2);margin:0 auto 16px}
+.tog{width:51px;height:31px;border-radius:16px;background:var(--bd2);padding:2px;display:flex;flex:none;transition:background .2s}
+.tog i{width:27px;height:27px;border-radius:14px;background:#fff;box-shadow:0 2px 4px rgba(0,0,0,.15);transition:transform .2s}
+.tog.on{background:var(--pr)}.tog.on i{transform:translateX(20px)}
+.setrow{display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid var(--bd);min-height:56px;width:100%}
+.setrow:last-child{border-bottom:0}
+.setrow .si{width:36px;height:36px;border-radius:12px;background:var(--sf2);display:grid;place-items:center;color:var(--tx);flex:none}
+.sec-t{font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--tx2);margin-bottom:-8px}
+.kpad{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;padding:8px 16px 34px;background:var(--sf2)}
+.kpad button{height:50px;border-radius:12px;font-size:24px;font-weight:600;display:grid;place-items:center;background:var(--sf);color:var(--tx);box-shadow:0 1px 0 var(--bd2)}
+.kpad button.fn{background:none;box-shadow:none}
+.kpad button:active{background:var(--tint)}
+.gridf{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.mini{background:var(--sf);border:1px solid var(--bd);border-radius:14px;padding:10px 12px;display:flex;gap:10px;align-items:center;min-height:56px;text-align:left}
+.mini .k{font-size:11px;color:var(--tx2);font-weight:600;letter-spacing:.3px}
+.mini .val{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.skel{background:linear-gradient(90deg,var(--sf2) 25%,color-mix(in srgb,var(--sf2) 50%,var(--sf)) 50%,var(--sf2) 75%);background-size:200% 100%;animation:shim 1.2s infinite;border-radius:8px}
+@keyframes shim{to{background-position:-200% 0}}
+.balance{background:var(--grad);color:#fff;border-radius:24px;padding:22px;display:flex;flex-direction:column;gap:16px;box-shadow:var(--sh2);position:relative;overflow:hidden}
+.balance .deco{position:absolute;right:-60px;top:-80px;width:220px;height:220px;border-radius:50%;border:1px solid rgba(255,255,255,.14)}
+.balance .deco.b{right:-20px;top:-40px;width:140px;height:140px}
+.bsub{flex:1;background:rgba(255,255,255,.12);border-radius:16px;padding:12px;display:flex;gap:10px;align-items:center}
+.bsub .ci{width:32px;height:32px;border-radius:10px;background:rgba(255,255,255,.18);display:grid;place-items:center}
+.qa{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.qa button{display:flex;flex-direction:column;align-items:center;gap:8px;font-size:12px;font-weight:600;color:var(--tx)}
+.qa .qi{width:56px;height:56px;border-radius:18px;background:var(--sf);box-shadow:var(--sh);display:grid;place-items:center;color:var(--pr)}
+.chart{position:relative}
+.chart svg text{font-family:var(--font);font-size:11px;fill:var(--tx2);font-weight:500}
+.tip{position:absolute;background:var(--inv);color:var(--oninv);border-radius:10px;padding:6px 10px;font-size:12px;font-weight:500;transform:translate(-50%,-100%);white-space:nowrap;pointer-events:none;box-shadow:var(--sh)}
+.tip b{display:block;font-size:14px;font-weight:700}
+.tip::after{content:"";position:absolute;left:50%;bottom:-5px;width:10px;height:10px;background:var(--inv);transform:translateX(-50%) rotate(45deg);border-radius:2px}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--tx2);font-weight:500}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+.av{width:44px;height:44px;border-radius:22px;background:linear-gradient(135deg,#FFB38A,#E25DB0);color:#fff;font-weight:700;display:grid;place-items:center;font-size:15px;flex:none}
+.av.lg{width:84px;height:84px;border-radius:42px;font-size:28px;border:4px solid var(--sf);box-shadow:var(--sh)}
+.badge{font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;padding:2px 6px;border-radius:6px;background:var(--wntint);color:var(--wnt)}
+.ring{position:relative;display:grid;place-items:center;flex:none}
+.ring>span{position:absolute;font-size:13px;font-weight:700}
+.empty{display:flex;flex-direction:column;align-items:center;text-align:center;gap:12px;padding:8px 12px}
+.illus{width:120px;height:120px;border-radius:60px;background:var(--tint);display:grid;place-items:center;color:var(--pr);position:relative}
+.illus::after{content:"";position:absolute;inset:-12px;border-radius:50%;border:1.5px dashed color-mix(in srgb,var(--pr) 30%,transparent)}
+.banner{display:flex;gap:12px;align-items:flex-start;padding:14px;border-radius:16px;font-size:13px;font-weight:500;line-height:19px}
+.banner.info{background:var(--tint);color:var(--txb)}.banner.warn{background:var(--wntint);color:var(--wnt)}.banner.err{background:var(--ertint);color:var(--ert)}.banner.ok{background:var(--oktint);color:var(--okt)}
+.splash{background:linear-gradient(160deg,#6E66FF 0%,#473CE3 55%,#2B2391 100%);color:#fff}
+.onb-ill{position:relative;height:300px;margin:0 -4px}
+.float{position:absolute;background:var(--sf);border-radius:18px;box-shadow:var(--sh);padding:12px 16px 12px 12px;display:flex;gap:10px;align-items:center}
+.dots{display:flex;gap:6px}.dots i{width:8px;height:8px;border-radius:4px;background:var(--bd2)}.dots i.on{width:24px;background:var(--pr)}
+.stepchk{display:grid;place-items:center;width:96px;height:96px;border-radius:48px;background:var(--oktint);color:var(--okt);position:relative}
+.stepchk::before{content:"";position:absolute;inset:-14px;border-radius:50%;background:color-mix(in srgb,var(--ok) 8%,transparent);animation:pulse 1.6s ease-out infinite}
+@keyframes pulse{from{transform:scale(.8);opacity:1}to{transform:scale(1.25);opacity:0}}
+.iconpick{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}
+.iconpick button{height:48px;border-radius:14px;background:var(--sf);border:1px solid var(--bd);display:grid;place-items:center;color:var(--tx2)}
+.iconpick button.on{background:var(--tint);border:1.5px solid var(--pr);color:var(--pr)}
+.big-amt{display:flex;align-items:baseline;justify-content:center;gap:4px;padding:6px 0}
+.big-amt .cur{font-size:28px;font-weight:700;color:var(--tx2)}
+.big-amt .n{font-size:52px;font-weight:800;letter-spacing:-2px;font-variant-numeric:tabular-nums;line-height:60px}
+.caret{width:2px;height:44px;background:var(--pr);animation:blink 1s steps(1) infinite;align-self:center}
+@keyframes blink{50%{opacity:0}}
+.divline{height:1px;background:var(--bd)}
+/* prototype area */
+.proto{display:grid;grid-template-columns:auto minmax(0,1fr);gap:40px;align-items:start}
+.proto .stage{position:sticky;top:84px}
+.proto .stage .pw{zoom:.86;cursor:default}
+.ctrl{display:grid;gap:16px;min-width:0}
+.ctrl .panel{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:20px;display:grid;gap:12px}
+.ctrl select,.ctrl button.sbtn{font:inherit;font-size:14px;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:10px;padding:9px 12px}
+.ctrl button.sbtn{cursor:pointer;font-weight:600}
+.ctrl button.sbtn[aria-pressed="true"]{background:var(--accent);color:#fff;border-color:var(--accent)}
+.ctrl .btnrow{display:flex;gap:8px;flex-wrap:wrap}
+.ctrl ul{margin:0;padding-left:18px;color:var(--muted);font-size:14px;display:grid;gap:6px}
+.ctrl .crumbs{display:flex;flex-wrap:wrap;gap:6px}
+.ctrl .crumbs button{font:inherit;font-size:12px;font-weight:600;border:1px solid var(--line);background:var(--page);color:var(--muted);border-radius:8px;padding:5px 9px;cursor:pointer}
+.ctrl .crumbs button.cur{background:var(--chip);color:var(--accent-ink);border-color:transparent}
+@media (max-width:860px){.proto{grid-template-columns:1fr}.proto .stage{position:static;display:flex;justify-content:center}}
+/* docs */
+.docgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px}
+.doc{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:24px;display:grid;gap:12px;align-content:start;min-width:0}
+.doc h3{font-size:18px}
+.doc h4{font-size:14px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-weight:700}
+.doc ul,.doc ol{margin:0;padding-left:18px;display:grid;gap:6px;color:var(--muted);font-size:14px}
+.doc p{color:var(--muted);font-size:14px}
+.doc b,.doc strong{color:var(--ink)}
+.span2{grid-column:span 2}
+@media (max-width:700px){.span2{grid-column:auto}}
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:16px;background:var(--panel)}
+table{border-collapse:collapse;width:100%;font-size:13.5px;min-width:720px}
+th,td{text-align:left;padding:12px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);background:var(--page);font-weight:700}
+tr:last-child td{border-bottom:0}
+td b{font-weight:700}
+.persona{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:start}
+.persona .pav{width:64px;height:64px;border-radius:20px;display:grid;place-items:center;font-weight:800;font-size:22px;color:#fff}
+.tagrow{display:flex;flex-wrap:wrap;gap:6px}
+.tag{font-size:12px;font-weight:600;background:var(--chip);color:var(--accent-ink);padding:4px 10px;border-radius:999px}
+.flow{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.flow span{background:var(--page);border:1px solid var(--line);border-radius:10px;padding:7px 11px;font-size:13px;font-weight:600}
+.flow em{font-style:normal;color:var(--muted)}
+.flow span.d{border-style:dashed;color:var(--muted)}
+.ia{font-family:var(--mono);font-size:13px;line-height:1.7;background:var(--code);border:1px solid var(--line);border-radius:16px;padding:20px;overflow-x:auto;white-space:pre;color:var(--ink)}
+.wfgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:20px}
+.wf{background:var(--panel);border:1.5px solid var(--line);border-radius:26px;padding:14px 12px;display:flex;flex-direction:column;gap:8px;height:390px;position:relative}
+.wf i{display:block;background:var(--line);border-radius:6px;flex:none}
+.wf i.o{background:none;border:1.5px dashed color-mix(in srgb,var(--muted) 45%,transparent)}
+.wf i.k{background:color-mix(in srgb,var(--muted) 35%,transparent)}
+.wf .r{display:flex;gap:6px}
+.wf .nv{margin-top:auto;display:flex;justify-content:space-around;border-top:1.5px solid var(--line);padding-top:8px}
+.wf .nv i{width:18px;height:18px;border-radius:5px}
+.wf .nv i.c{border-radius:50%;width:22px;height:22px;background:color-mix(in srgb,var(--muted) 45%,transparent)}
+.wfcap{font-size:13px;font-weight:700;margin-top:8px}
+.wfnote{font-size:12px;color:var(--muted)}
+.swatches{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.sw{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--panel);font-size:12px}
+.sw .c{height:56px;display:flex}
+.sw .c span{flex:1}
+.sw .m{padding:8px 10px;display:grid;gap:2px}
+.sw .m b{font-size:12.5px}
+.sw .m code{font-family:var(--mono);font-size:11px;color:var(--muted)}
+.showcase{border-radius:20px;padding:24px;display:grid;gap:20px;border:1px solid var(--line)}
+.showcase .lab{font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--tx2)}
+.scgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px;align-items:start}
+.scgrid>div{display:grid;gap:10px;min-width:0}
+pre.code{font-family:var(--mono);font-size:12px;line-height:1.6;background:var(--code);border:1px solid var(--line);border-radius:14px;padding:16px;overflow:auto;max-height:340px;margin:0;color:var(--ink)}
+.copybtn{justify-self:start;font:inherit;font-size:13px;font-weight:600;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:10px;padding:8px 12px;cursor:pointer}
+.field-blank{border:1px dashed var(--line);border-radius:10px;min-height:38px;padding:8px 12px;color:var(--muted);font-size:13px}
+@media print{
+ @page{size:420mm 297mm;margin:10mm}
+ html,body{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+ body{padding:0 4mm}
+ body::before,.topnav,#protoReset,#themeL,#themeD,#jump,label[for="jump"],.copybtn{display:none!important}
+ *{animation:none!important;transition:none!important}
+ section.block{break-before:page;padding-top:0}
+ .hero{padding-top:0}
+ .hero-phones .pw:nth-child(2){display:block!important}
+ .shot,.doc,.tbl,.wf,.showcase,.persona,.note,.panel,.proto .stage,figure{break-inside:avoid}
+ .group-title{break-after:avoid}
+ .proto{grid-template-columns:auto minmax(0,1fr)}
+ .proto .stage{position:static}
+ .gallery{display:block;font-size:0}
+ .shot{display:inline-grid;width:33%;vertical-align:top;margin:0 0 24px;font-size:15px}
+ .pw{zoom:.85}
+ .shot figcaption{width:340px}
+ .group-title{break-before:page;margin-top:0}
+ #gallery .group-title:first-child{break-before:auto}
+ .hero-phones .pw{zoom:.5}
+ .hero-phones .pw:nth-child(2){margin-top:0}
+ .proto .stage .pw{zoom:1}
+ .shead{break-after:avoid}
+}
+footer{margin-top:80px;padding-top:24px;border-top:1px solid var(--line);color:var(--muted);font-size:13px}
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+<defs>
+<symbol id="i-home" viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9v11h14V9"/><path d="M10 20v-6h4v6"/></symbol>
+<symbol id="i-chart" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M8 16v-5"/><path d="M13 16V8"/><path d="M18 16v-3"/></symbol>
+<symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+<symbol id="i-pie" viewBox="0 0 24 24"><path d="M21.2 15.9A10 10 0 1 1 8 2.8"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></symbol>
+<symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></symbol>
+<symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></symbol>
+<symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></symbol>
+<symbol id="i-filter" viewBox="0 0 24 24"><path d="M4 6h9M19 6h1M4 12h3M11 12h9M4 18h11M19 18h1"/><circle cx="16" cy="6" r="2"/><circle cx="9" cy="12" r="2"/><circle cx="17" cy="18" r="2"/></symbol>
+<symbol id="i-income" viewBox="0 0 24 24"><path d="M17 7 7 17"/><path d="M17 17H7V7"/></symbol>
+<symbol id="i-expense" viewBox="0 0 24 24"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></symbol>
+<symbol id="i-swap" viewBox="0 0 24 24"><path d="M7 4 3 8l4 4"/><path d="M3 8h14"/><path d="m17 20 4-4-4-4"/><path d="M21 16H7"/></symbol>
+<symbol id="i-chevron-right" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></symbol>
+<symbol id="i-chevron-left" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></symbol>
+<symbol id="i-chevron-down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+<symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol>
+<symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></symbol>
+<symbol id="i-card" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></symbol>
+<symbol id="i-food" viewBox="0 0 24 24"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/></symbol>
+<symbol id="i-shopping" viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></symbol>
+<symbol id="i-transport" viewBox="0 0 24 24"><path d="M5 17h14v-5l-2-5H7l-2 5v5Z"/><path d="M5 12h14"/><circle cx="8" cy="17" r="2"/><circle cx="16" cy="17" r="2"/></symbol>
+<symbol id="i-bills" viewBox="0 0 24 24"><path d="M4 2v20l3-2 3 2 2-2 2 2 3-2 3 2V2l-3 2-3-2-2 2-2-2-3 2Z"/><path d="M8 9h8M8 13h6"/></symbol>
+<symbol id="i-entertainment" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="2.18"/><path d="M7 2v20M17 2v20M2 12h20M2 7h5M2 17h5M17 17h5M17 7h5"/></symbol>
+<symbol id="i-health" viewBox="0 0 24 24"><path d="M19 14c1.5-1.5 3-3.2 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.8 0-3 .5-4.5 2-1.5-1.5-2.7-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4 3 5.5l7 7Z"/><path d="M3.2 12h5.3l1.5-3 3 6 1.5-3h6.3"/></symbol>
+<symbol id="i-education" viewBox="0 0 24 24"><path d="M22 10 12 5 2 10l10 5 10-5Z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></symbol>
+<symbol id="i-other" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></symbol>
+<symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></symbol>
+<symbol id="i-plane" viewBox="0 0 24 24"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/></symbol>
+<symbol id="i-laptop" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="11" rx="2"/><path d="M2 20h20"/></symbol>
+<symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/></symbol>
+<symbol id="i-sparkles" viewBox="0 0 24 24"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9Z"/><path d="M19 3v4M17 5h4M5 17v4M3 19h4"/></symbol>
+<symbol id="i-settings" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/></symbol>
+<symbol id="i-moon" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></symbol>
+<symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol>
+<symbol id="i-rupee" viewBox="0 0 24 24"><path d="M6 3h12M6 8h12M6 13l8.5 8M6 13h3a5 5 0 0 0 0-10"/></symbol>
+<symbol id="i-lock" viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></symbol>
+<symbol id="i-fingerprint" viewBox="0 0 24 24"><path d="M12 10a2 2 0 0 0-2 2c0 1.02-.1 2.51-.26 4"/><path d="M14 13.12c0 2.38 0 6.38-1 8.88"/><path d="M17.29 21.02c.12-.6.43-2.3.5-3.02"/><path d="M2 12a10 10 0 0 1 18-6"/><path d="M21.8 16c.2-2 .13-5.35 0-6"/><path d="M5 19.5C5.5 18 6 15 6 12a6 6 0 0 1 .34-2"/><path d="M8.65 22c.21-.66.45-1.32.57-2"/><path d="M9 6.8a6 6 0 0 1 9 5.2v2"/></symbol>
+<symbol id="i-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></symbol>
+<symbol id="i-logout" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/></symbol>
+<symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></symbol>
+<symbol id="i-eye-off" viewBox="0 0 24 24"><path d="M9.9 4.2A10 10 0 0 1 12 4c6.5 0 10 8 10 8a17 17 0 0 1-2.2 3.2M6.6 6.6C3.9 8.4 2 12 2 12s3.5 8 10 8a9.7 9.7 0 0 0 5.4-1.6"/><path d="M14.1 14.1a3 3 0 1 1-4.2-4.2"/><path d="m2 2 20 20"/></symbol>
+<symbol id="i-mail" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></symbol>
+<symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+<symbol id="i-alert" viewBox="0 0 24 24"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/><path d="M12 9v4M12 17h.01"/></symbol>
+<symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/></symbol>
+<symbol id="i-edit" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></symbol>
+<symbol id="i-wifi" viewBox="0 0 24 24"><path d="M5 12.6a10 10 0 0 1 14 0M1.4 9a15 15 0 0 1 21.2 0M8.5 16.4a5 5 0 0 1 7 0M12 20h.01"/></symbol>
+<symbol id="i-phone" viewBox="0 0 24 24"><rect x="6" y="2" width="12" height="20" rx="2"/><path d="M11 18h2"/></symbol>
+<symbol id="i-music" viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></symbol>
+<symbol id="i-tv" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="15" rx="2"/><path d="m17 2-5 5-5-5"/></symbol>
+<symbol id="i-trend-up" viewBox="0 0 24 24"><path d="m22 7-8.5 8.5-5-5L2 17"/><path d="M16 7h6v6"/></symbol>
+<symbol id="i-trend-down" viewBox="0 0 24 24"><path d="m22 17-8.5-8.5-5 5L2 7"/><path d="M16 17h6v-6"/></symbol>
+<symbol id="i-note" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6M8 13h8M8 17h5"/></symbol>
+<symbol id="i-store" viewBox="0 0 24 24"><path d="M3 9 4.5 4h15L21 9"/><path d="M3 9h18a3 3 0 0 1-6 0 3 3 0 0 1-6 0 3 3 0 0 1-6 0Z"/><path d="M5 12v8h14v-8"/></symbol>
+<symbol id="i-refresh" viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-2.6-6.4L21 8"/><path d="M21 3v5h-5"/></symbol>
+<symbol id="i-cloud-off" viewBox="0 0 24 24"><path d="m2 2 20 20"/><path d="M5.8 5.8A7 7 0 0 0 8 19h9a5 5 0 0 0 2.5-.7M21.6 15.6A5 5 0 0 0 17.5 9h-.8A7 7 0 0 0 10 5.1"/></symbol>
+<symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></symbol>
+<symbol id="i-type" viewBox="0 0 24 24"><path d="M4 7V4h16v3M9 20h6M12 4v16"/></symbol>
+<symbol id="i-briefcase" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2M2 13h20"/></symbol>
+<symbol id="i-repeat" viewBox="0 0 24 24"><path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></symbol>
+<symbol id="i-scan" viewBox="0 0 24 24"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2M7 12h10"/></symbol>
+<symbol id="i-cash" viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/><path d="M6 12h.01M18 12h.01"/></symbol>
+<symbol id="i-backspace" viewBox="0 0 24 24"><path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2Z"/><path d="m18 9-6 6M12 9l6 6"/></symbol>
+<symbol id="i-gift" viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7M7.5 8a2.5 2.5 0 0 1 0-5C10 3 12 8 12 8s2-5 4.5-5a2.5 2.5 0 0 1 0 5"/></symbol>
+<symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M4 21h16"/></symbol>
+<symbol id="i-mark" viewBox="0 0 48 48"><path d="M15 37V18.5C15 13.8 18.8 10 23.5 10H35" stroke-width="7"/><path d="M15 25.5H26" stroke-width="7"/><circle cx="35" cy="25.5" r="3.75" fill="var(--mark-dot,#AFA8FF)" stroke="none"/></symbol>
+</defs>
+</svg>
+
+<nav class="topnav" aria-label="Sections"><div class="in">
+  <a class="brand" href="#top"><svg viewBox="0 0 48 48" fill="none" stroke="var(--accent)" stroke-linecap="round" aria-hidden="true"><use href="#i-mark"/></svg>FINOVA</a>
+  <div class="navlinks">
+    <a href="#screens">06 · Screens</a><a href="#dark-mode">07 · Dark mode</a><a href="#prototype">08 · Prototype</a><a href="#design-system">05 · Design system</a><a href="#case-study">01–04 · Case study</a><a href="#testing">09 · Testing &amp; rationale</a>
+  </div>
+</div></nav>
+
+<div class="wrap" id="top">
+  <header class="hero">
+    <div style="display:grid;gap:18px;min-width:0">
+      <p class="eyebrow">UI/UX case study · Fintech mobile app · 2026</p>
+      <h1>FINOVA<br><span>Take Control of Your Money.</span></h1>
+      <p class="lede">A smart expense tracker for students and young professionals in India (18–35). Manual entry, no bank login: track income and expenses, set budgets, grow savings goals and get plain-language insights. Every number below belongs to one demo user, Aarav Sharma, for 1–23 November 2026, and adds up across every screen.</p>
+      <div class="facts">
+        <div class="fact"><b>27</b>screens &amp; states</div>
+        <div class="fact"><b>5</b>dark-mode screens</div>
+        <div class="fact"><b>18</b>reusable components</div>
+        <div class="fact"><b>₹84,250</b>demo balance</div>
+      </div>
+      <p class="note"><b>Opening balance (1 Nov) ₹47,700 + income ₹65,000 − expenses ₹28,450 = available balance ₹84,250.</b> Budget ₹40,000 · used 71.1% · ₹11,550 left. Savings goals are tracked separately and are not part of the available balance.</p>
+    </div>
+    <div class="hero-phones" id="heroPhones"></div>
+  </header>
+
+  <section class="block" id="screens">
+    <div class="shead"><p class="eyebrow">Page 06</p><h2>High-fidelity UI screens</h2><p class="lede">390 × 844 frames in flow order. Click any screen to open it in the live prototype.</p></div>
+    <div id="gallery"></div>
+  </section>
+
+  <section class="block" id="dark-mode">
+    <div class="shead"><p class="eyebrow">Page 07</p><h2>Dark mode</h2><p class="lede">Deep navy surfaces (#0B0D1A canvas, #151829 cards), lifted accents (#7C75FF primary, #AFA8FF for links) and softened status colours keep text at AA contrast. Category colours brighten slightly so charts stay legible. The same tokens drive both themes.</p></div>
+    <div class="gallery" id="darkGallery"></div>
+  </section>
+
+  <section class="block" id="prototype">
+    <div class="shead"><p class="eyebrow">Page 08</p><h2>Interactive prototype</h2><p class="lede">Every button in the phone works. Try logging an expense with the keypad, tapping chart bars, filtering transactions, deleting with confirmation, or switching Appearance to dark in Settings.</p></div>
+    <div class="proto">
+      <div class="stage"><div class="pw static"><div class="phone app" id="protoPhone"></div></div></div>
+      <div class="ctrl">
+        <div class="panel">
+          <div class="row" style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+            <div><p class="eyebrow">Now showing</p><h3 id="protoTitle" style="font-size:20px">Home</h3></div>
+            <div class="btnrow">
+              <button class="sbtn" id="themeL" aria-pressed="true">Light</button>
+              <button class="sbtn" id="themeD" aria-pressed="false">Dark</button>
+              <button class="sbtn" id="protoReset">Restart flow</button>
+            </div>
+          </div>
+          <label for="jump" style="font-size:13px;font-weight:600;color:var(--muted)">Jump to screen</label>
+          <select id="jump"></select>
+        </div>
+        <div class="panel"><h4 style="font-size:14px">Interactions on this screen</h4><ul id="protoSpec"></ul></div>
+        <div class="panel"><h4 style="font-size:14px">Key flows to try</h4><div class="crumbs" id="flowBtns"></div></div>
+        <div class="panel">
+          <h4 style="font-size:14px">Motion spec</h4>
+          <ul>
+            <li>Screen push: 240 ms, cubic-bezier(.2,.8,.2,1), 14 px slide + fade.</li>
+            <li>Tap feedback: 180 ms scale to 0.98 on buttons, surface-alt fill on list rows.</li>
+            <li>Progress bars animate width over 600 ms on first view.</li>
+            <li>Dialogs: 200 ms scrim fade + 240 ms scale-in from 0.94. Toasts slide up 12 px, auto-dismiss after 4 s.</li>
+            <li>All motion is disabled when the OS “Reduce motion” setting is on.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="design-system">
+    <div class="shead"><p class="eyebrow">Page 05</p><h2>Design system</h2><p class="lede">Colour tokens for light and dark themes, a type scale, spacing, elevation, 64 icons and 18 reusable components with their states.</p></div>
+    <div id="dsRoot" style="display:grid;gap:28px"></div>
+  </section>
+
+  <section class="block" id="case-study">
+    <div class="shead"><p class="eyebrow">Pages 01–04</p><h2>UX case study</h2><p class="lede">Problem, goals, proto-personas, journey, information architecture, user flows and low-fidelity wireframes. Personas and assumptions are hypotheses to validate, not research findings.</p></div>
+    <div id="caseRoot" style="display:grid;gap:28px"></div>
+  </section>
+
+  <section class="block" id="testing">
+    <div class="shead"><p class="eyebrow">Page 09</p><h2>Design rationale &amp; usability testing</h2><p class="lede">How UX principles shaped specific screens, and a ready-to-run test plan for classmates. No results are filled in: record them after real sessions.</p></div>
+    <div id="testRoot" style="display:grid;gap:28px"></div>
+  </section>
+
+
+  <footer>FINOVA is a student design concept. All names, merchants and amounts are demonstration data for Aarav Sharma (fictional). Finova does not connect to banks or pay bills; alternative sign-in and biometric lock are shown as concepts.</footer>
+</div>
+
+<script>
+/* ============ DATA (single source of truth) ============ */
+const inr=(n,dec)=>{const neg=n<0;let a=Math.abs(n);let s=Math.floor(a).toString();let l=s.slice(-3),r=s.slice(0,-3);if(r)l=r.replace(/\B(?=(\d{2})+(?!\d))/g,',')+','+l;let out='₹'+l;if(dec)out+='.'+(a.toFixed(2).split('.')[1]);return out;};
+const sgn=n=>(n<0?'−':'+')+inr(n);
+const D={opening:47700,income:65000,expenses:28450,balance:84250,budget:40000,daysLeft:7};
+const CAT={
+ food:{n:'Food & Drinks',s:'Food',ic:'food',spent:5840,budget:8000,prev:6640},
+ bills:{n:'Bills & Utilities',s:'Bills',ic:'bills',spent:11800,budget:12500,prev:11800},
+ shopping:{n:'Shopping',s:'Shopping',ic:'shopping',spent:4120,budget:5500,prev:4610},
+ transport:{n:'Transport',s:'Transport',ic:'transport',spent:2180,budget:3500,prev:1720},
+ entertainment:{n:'Entertainment',s:'Fun',ic:'entertainment',spent:1450,budget:2500,prev:1610},
+ health:{n:'Health',s:'Health',ic:'health',spent:1260,budget:3000,prev:2100},
+ education:{n:'Education',s:'Education',ic:'education',spent:1100,budget:3000,prev:1100},
+ other:{n:'Other',s:'Other',ic:'other',spent:700,budget:2000,prev:460},
+ income:{n:'Income',ic:'briefcase'},savings:{n:'Savings',ic:'target'}
+};
+const CATKEYS=['bills','food','shopping','transport','entertainment','health','education','other'];
+const PCT={bills:41,food:21,shopping:15,transport:8,entertainment:5,health:4,education:4,other:2}; // largest-remainder rounding of share of ₹28,450 → sums to 100
+const TX=[
+ {id:'t1',m:'Swiggy',c:'food',a:-489,day:'23',t:'1:12 pm',pay:'UPI',note:'Lunch with team'},
+ {id:'t2',m:'Uber',c:'transport',a:-245,day:'23',t:'9:05 am',pay:'UPI',note:'Office commute'},
+ {id:'t3',m:'Amazon',c:'shopping',a:-1299,day:'22',t:'8:40 pm',pay:'Credit card',note:'Wireless mouse'},
+ {id:'t4',m:'Third Wave Coffee',c:'food',a:-207,day:'22',t:'11:15 am',pay:'UPI',note:''},
+ {id:'t5',m:'Zepto',c:'food',a:-500,day:'21',t:'6:30 pm',pay:'UPI',note:'Groceries'},
+ {id:'t6',m:'BigBasket',c:'food',a:-580,day:'20',t:'7:50 pm',pay:'Debit card',note:''},
+ {id:'t7',m:'Ola',c:'transport',a:-310,day:'20',t:'10:20 pm',pay:'UPI',note:''},
+ {id:'t8',m:'Apollo Pharmacy',c:'health',a:-540,day:'19',t:'5:05 pm',pay:'UPI',note:''},
+ {id:'t9',m:'PVR INOX',c:'entertainment',a:-832,day:'18',t:'9:30 pm',pay:'Credit card',note:'Movie night'},
+ {id:'t10',m:'Zomato',c:'food',a:-618,day:'18',t:'1:40 pm',pay:'UPI',note:''},
+ {id:'t11',m:'Namma Metro recharge',c:'transport',a:-500,day:'17',t:'8:45 am',pay:'UPI',note:''},
+ {id:'t12',m:'Rapido',c:'transport',a:-120,day:'17',t:'7:10 pm',pay:'UPI',note:''},
+ {id:'t13',m:'Salary Credit',c:'income',a:65000,day:'1',t:'10:00 am',pay:'Bank transfer',note:'November salary'}
+];
+const DAYNAME={'23':'Mon, 23 Nov','22':'Sun, 22 Nov','21':'Sat, 21 Nov','20':'Fri, 20 Nov','19':'Thu, 19 Nov','18':'Wed, 18 Nov','17':'Tue, 17 Nov','1':'Sun, 1 Nov'};
+const WEEK=[['Tue',620,'Tue, 17 Nov'],['Wed',1450,'Wed, 18 Nov'],['Thu',540,'Thu, 19 Nov'],['Fri',890,'Fri, 20 Nov'],['Sat',500,'Sat, 21 Nov'],['Sun',1506,'Sun, 22 Nov'],['Mon',734,'Today']];
+const MONTHW=[['1–7',14860,'1–7 Nov'],['8–14',5230,'8–14 Nov'],['15–21',6120,'15–21 Nov'],['22–23',2240,'22–23 Nov']];
+const TREND=[['Jun',26900],['Jul',29400],['Aug',27850],['Sep',30150],['Oct',31200],['Nov',28450]];
+const GOALS=[
+ {k:'laptop',n:'New Laptop',ic:'laptop',saved:42000,target:80000,date:'Jun 2027',monthly:5429,c:'var(--c-bills)'},
+ {k:'goa',n:'Goa Vacation',ic:'plane',saved:12000,target:35000,date:'Mar 2027',monthly:5750,c:'var(--c-transport)'},
+ {k:'emergency',n:'Emergency Fund',ic:'shield',saved:65000,target:100000,date:'Dec 2027',monthly:2692,c:'var(--c-health)'}
+];
+const BILLS=[
+ {n:'Jio Recharge',sub:'Mobile · 28-day plan',ic:'phone',a:299,due:'30 Nov',inD:7,c:'var(--c-transport)'},
+ {n:'ACT Fibernet',sub:'Internet · monthly',ic:'wifi',a:799,due:'1 Dec',inD:8,c:'var(--c-bills)'},
+ {n:'Netflix',sub:'Subscription · monthly',ic:'tv',a:499,due:'2 Dec',inD:9,c:'var(--c-entertainment)'},
+ {n:'Rent',sub:'Flat share · monthly',ic:'home',a:9500,due:'5 Dec',inD:12,c:'var(--c-food)'},
+ {n:'Spotify',sub:'Subscription · monthly',ic:'music',a:119,due:'8 Dec',inD:15,c:'var(--c-health)'},
+ {n:'BESCOM Electricity',sub:'Utility · amount varies',ic:'bills',a:1202,due:'~10 Dec',inD:17,c:'var(--c-education)',est:true}
+];
+/* ============ STATE ============ */
+const S0={amount:'489',cat:'food',seg:'week',bar:1,filter:'all',q:'',pwd:false,dark:false,thr:80,goalIcon:'phone',period:'Monthly',tog:{budget:true,bills:true,weekly:true,goals:true,entries:false,lock:true,bio:false,motion:false,bignum:false},toast:null,dialog:false,appear:'Light',bcat:'shopping',authMode:'signin',signErr:false,incCat:'Salary',ntab:'all',pt:5,anTab:'month',amtErr:false,txId:'t1',plan:'budget',limit:'5500'};
+let S=JSON.parse(JSON.stringify(S0));
+let PROTO=false; // true while rendering the interactive phone
+/* ============ HELPERS ============ */
+const ic=(n,c='')=>`<svg class="ic ${c}" aria-hidden="true"><use href="#i-${n}"/></svg>`;
+const tile=(k,c='')=>{const col=k==='income'?'var(--c-income)':k==='savings'?'var(--c-savings)':`var(--c-${k})`;return `<span class="tile ${c}" style="--c:${col}">${ic(CAT[k]?CAT[k].ic:k)}</span>`;};
+const tileIc=(icn,col,c='')=>`<span class="tile ${c}" style="--c:${col}">${ic(icn)}</span>`;
+const sb=(inv)=>`<div class="sb ${inv?'inv':''}"><span>9:41</span><span class="ind"><span class="sig"><i style="height:4px"></i><i style="height:6px"></i><i style="height:8px"></i><i style="height:10px"></i></span>${ic('wifi','s16')}<span class="bat"><i></i></span></span></div>`;
+const NAVI=[['home','Home','home'],['analytics','Analytics','chart'],['add','Add','plus'],['budget','Budget','pie'],['profile','Profile','user']];
+const nav=(a)=>`<nav class="navb" aria-label="Main">${NAVI.map(([k,l,i])=>k==='add'?`<button class="addb" data-go="add-expense" aria-label="Add transaction"><span class="add">${ic('plus')}</span>Add</button>`:`<button class="${a===k?'on':''}" data-go="${k==='budget'?'budget':k}" ${a===k?'aria-current="page"':''}><span class="ind">${ic(i)}</span>${l}</button>`).join('')}</nav><div class="homebar"></div>`;
+const hdr=(t,back='home',right='')=>`<div class="hdr"><button class="ib" data-go="${back}" aria-label="Back">${ic('chevron-left','s22')}</button><h2>${t}</h2>${right||'<span class="ib ghost"></span>'}</div>`;
+const seg=(key,opts,cur)=>`<div class="seg" role="tablist">${opts.map(([v,l])=>`<button role="tab" aria-selected="${cur===v}" class="${cur===v?'on':''}" data-set="${key}:${v}">${l}</button>`).join('')}</div>`;
+const bar=(pct,col='var(--pr)')=>`<div class="bar" role="progressbar" aria-valuenow="${Math.round(pct)}" aria-valuemin="0" aria-valuemax="100"><i style="width:${Math.min(pct,100)}%;background:${col}"></i></div>`;
+const txRow=(t)=>{const inc=t.a>0;return `<button class="tx" data-tx="${t.id}">${tile(t.c)}<div class="grow col" style="gap:2px"><span class="t-bs">${t.m}</span><span class="t-cap c2">${inc?'Income · '+t.pay:CAT[t.c].n+' · '+t.pay}</span></div><div class="r"><span class="amt-s ${inc?'pos':''}">${sgn(t.a)}</span><span class="t-cap c2">${t.day==='23'?t.t:(t.day==='22'?'Yesterday':DAYNAME[t.day].split(', ')[1])}</span></div></button>`;};
+const toastHTML=(nonav)=>S.toast?`<div class="toast ${nonav?'nonav':''}" role="status"><span class="ti" style="background:${S.toast.type==='err'?'var(--er)':'var(--ok)'}">${ic(S.toast.type==='err'?'alert':'check','s16')}</span><span class="grow">${S.toast.msg}</span>${S.toast.undo?'<b>Undo</b>':''}</div>`:'';
+const tog=(k)=>`<button class="tog ${S.tog[k]?'on':''}" role="switch" aria-checked="${S.tog[k]}" data-tog="${k}" aria-label="${k}"><i></i></button>`;
+const status=(p)=>(p=Math.round(p),p>=100?['er','Over limit']:p>=85?['wn','Near limit']:p>=75?['br','Watch']:['ok','On track']);
+function donutSVG(size,stroke,segs,center=''){const r=(size-stroke)/2,C=2*Math.PI*r;let off=0;const gap=2;return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" role="img" aria-label="${center}"><g transform="rotate(-90 ${size/2} ${size/2})"><circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="var(--sf2)" stroke-width="${stroke}"/>${segs.map(([p,c])=>{const len=Math.max(p*C-gap,0);const s=`<circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="${c}" stroke-width="${stroke}" stroke-dasharray="${len} ${C-len}" stroke-dashoffset="${-off}"/>`;off+=p*C;return s;}).join('')}</g></svg>`;}
+function ringSVG(size,stroke,p,col){const r=(size-stroke)/2,C=2*Math.PI*r;return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" aria-hidden="true"><circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="var(--sf2)" stroke-width="${stroke}"/><circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="${col}" stroke-width="${stroke}" stroke-linecap="round" stroke-dasharray="${p*C} ${C}" transform="rotate(-90 ${size/2} ${size/2})"/></svg>`;}
+const catSegs=()=>CATKEYS.map(k=>[CAT[k].spent/D.expenses,`var(--c-${k})`]);
+/* ---------- charts ---------- */
+function barChart(){const wk=S.seg==='week';const data=wk?WEEK:MONTHW;const max=wk?2000:16000;const ticks=wk?[0,1000,2000]:[0,8000,16000];const W=302,H=168,L=34,T=14,B=24;const ph=H-T-B;const n=data.length;const slot=(W-L)/n;const bw=wk?22:40;
+ let g=ticks.map(v=>{const y=T+ph-(v/max)*ph;return `<line x1="${L}" x2="${W}" y1="${y}" y2="${y}" stroke="var(--bd)" stroke-dasharray="${v?'3 4':'0'}"/><text x="0" y="${y+4}">${v?'₹'+(v/1000)+'k':'₹0'}</text>`;}).join('');
+ const sel=S.bar!=null&&S.bar<n?S.bar:null;let tipH='';
+ g+=data.map(([l,v,full],i)=>{const h=Math.max(4,(v/max)*ph),x=L+slot*i+(slot-bw)/2,y=T+ph-h;const on=sel===i;if(on)tipH=`<div class="tip" style="left:${x+bw/2}px;top:${y-8}px">${full}<b>${inr(v)}</b></div>`;return `<g data-bar="${i}" style="cursor:pointer"><rect x="${L+slot*i}" y="${T}" width="${slot}" height="${ph+B}" fill="transparent"/><rect x="${x}" y="${y}" width="${bw}" height="${h}" rx="7" fill="${on?'var(--pr)':(i===n-1&&sel==null?'var(--pr)':'var(--acc)')}" opacity="${on||sel==null?1:.55}"/><text x="${x+bw/2}" y="${H-6}" text-anchor="middle" ${on?'style="fill:var(--tx);font-weight:700"':''}>${l}</text></g>`;}).join('');
+ const total=data.reduce((a,b)=>a+b[1],0);
+ return `<div class="chart" style="width:${W}px"><svg width="${W}" height="${H}" role="img" aria-label="${wk?'Daily spending, last 7 days':'Weekly spending, November'}: ${data.map(d=>d[2]+' '+inr(d[1])).join(', ')}. Total ${inr(total)}.">${g}</svg>${tipH}</div>`;}
+function lineChart(){const W=302,H=190,L=38,R=10,T=16,B=26,ph=H-T-B,max=70000;const n=TREND.length,step=(W-L-R)/(n-1);const X=i=>L+i*step,Y=v=>T+ph-(v/max)*ph;
+ let g=[0,20000,40000,60000].map(v=>`<line x1="${L}" x2="${W-R}" y1="${Y(v)}" y2="${Y(v)}" stroke="var(--bd)" stroke-dasharray="${v?'3 4':'0'}"/><text x="0" y="${Y(v)+4}">${v?'₹'+v/1000+'k':'₹0'}</text>`).join('');
+ const pts=TREND.map((d,i)=>`${X(i)},${Y(d[1])}`).join(' ');
+ g+=`<polygon points="${L},${Y(0)} ${pts} ${X(n-1)},${Y(0)}" fill="var(--pr)" opacity=".08"/>`;
+ g+=`<line x1="${L}" x2="${W-R}" y1="${Y(65000)}" y2="${Y(65000)}" stroke="var(--ok)" stroke-width="2.5"/>`;
+ g+=`<polyline points="${pts}" fill="none" stroke="var(--pr)" stroke-width="2.5" stroke-linejoin="round"/>`;
+ let tipH='';
+ g+=TREND.map((d,i)=>{const on=S.pt===i;if(on)tipH=`<div class="tip" style="left:${X(i)}px;top:${Y(d[1])-10}px">${d[0]}${i===5?' (1–23)':''} spent<b>${inr(d[1])}</b></div>`;return `<g data-pt="${i}" style="cursor:pointer"><rect x="${X(i)-step/2}" y="${T}" width="${step}" height="${ph+B}" fill="transparent"/><circle cx="${X(i)}" cy="${Y(d[1])}" r="${on?6:4}" fill="${on?'var(--pr)':'var(--sf)'}" stroke="var(--pr)" stroke-width="2.5"/><text x="${X(i)}" y="${H-6}" text-anchor="middle" ${on?'style="fill:var(--tx);font-weight:700"':''}>${d[0]}</text></g>`;}).join('');
+ return `<div class="chart" style="width:${W}px"><svg width="${W}" height="${H}" role="img" aria-label="Income was ₹65,000 every month from June to November. Expenses: ${TREND.map(d=>d[0]+' '+inr(d[1])).join(', ')} (November to date).">${g}</svg>${tipH}</div>`;}
+
+/* ============ SCREENS ============ */
+const SCR={};
+SCR.splash=()=>`<div class="scr splash">${sb(1)}
+ <svg width="390" height="844" style="position:absolute;inset:0" aria-hidden="true"><g fill="none" stroke="#fff"><circle cx="195" cy="380" r="310" opacity=".07"/><circle cx="195" cy="380" r="230" opacity=".09"/><circle cx="195" cy="380" r="150" opacity=".12"/></g><path d="M0 710 C40 700 60 680 95 685 S150 710 185 670 S245 620 280 635 S350 600 390 580" fill="none" stroke="#fff" stroke-opacity=".22" stroke-width="2"/><circle cx="280" cy="635" r="4" fill="#fff" opacity=".5"/></svg>
+ <div style="position:absolute;top:290px;left:24px;right:24px;display:flex;flex-direction:column;align-items:center;gap:20px">
+  <div style="width:104px;height:104px;border-radius:30px;background:#fff;display:grid;place-items:center;box-shadow:0 20px 40px -6px rgba(20,12,90,.4)"><svg width="68" height="68" viewBox="0 0 48 48" fill="none" stroke="#635BFF" stroke-linecap="round"><use href="#i-mark"/></svg></div>
+  <div style="font-size:38px;font-weight:800;letter-spacing:4px">FINOVA</div>
+  <div class="t-bl" style="font-weight:500;opacity:.82">Take Control of Your Money.</div>
+ </div>
+ <div style="position:absolute;bottom:72px;left:0;right:0;display:flex;flex-direction:column;align-items:center;gap:12px"><div style="width:120px;height:4px;border-radius:2px;background:rgba(255,255,255,.2);overflow:hidden"><i style="display:block;width:44%;height:100%;background:#fff;border-radius:2px;animation:load 1.6s ease-in-out infinite"></i></div><span class="t-cap" style="opacity:.75">Preparing your dashboard…</span></div>
+ <style>@keyframes load{0%{transform:translateX(-100%)}100%{transform:translateX(230%)}}</style>
+ <div class="homebar inv"></div></div>`;
+function onb(i,title,body,ill){const last=i===2;return `<div class="scr">${sb()}
+ <div class="hdr" style="padding:4px 24px"><span class="row" style="gap:8px;font-weight:800;letter-spacing:2px;font-size:16px"><svg width="26" height="26" viewBox="0 0 48 48" fill="none" stroke="var(--pr)" stroke-linecap="round"><use href="#i-mark"/></svg>FINOVA</span>${last?'':'<button class="t-bs cb" style="height:44px;padding:0 8px" data-go="signin">Skip</button>'}</div>
+ <div class="pad" style="gap:28px;padding-top:12px"><div class="onb-ill">${ill}</div>
+ <div class="col" style="gap:12px"><span class="t-over cb">Step ${i+1} of 3</span><h1 class="t-h1">${title}</h1><p class="t-bl c2">${body}</p></div>
+ <div class="dots" aria-label="Step ${i+1} of 3">${[0,1,2].map(k=>`<i class="${k===i?'on':''}"></i>`).join('')}</div></div>
+ <div style="position:fixed;left:24px;right:24px;bottom:30px;display:flex;flex-direction:column;gap:8px"><button class="btn pri" data-go="${last?'signin':'onb'+(i+2)}" ${last?'data-set="authMode:create"':''}>${last?'Get Started':'Continue'}</button>${last?'<button class="btn ter" data-go="signin" data-set="authMode:signin">I already have an account</button>':''}</div><div class="homebar"></div></div>`;}
+SCR.onb1=()=>onb(0,'Track every rupee in seconds','Log expenses and income in a few taps, with category, payment method and notes. No bank login needed.',`
+ <div style="position:absolute;left:36px;top:15px;width:270px;height:270px;border-radius:50%;background:var(--tint)"></div>
+ <div class="card" style="position:absolute;left:66px;top:50px;width:210px;padding:18px;gap:12px;border-radius:24px;transform:rotate(-3deg)"><span class="t-cap c2">New expense</span><span class="amt-xl">₹489</span><div class="row" style="gap:6px"><span class="chip on" style="height:30px;font-size:12px;padding:0 10px">Food</span><span class="chip plain" style="height:30px;font-size:12px;padding:0 10px">Transport</span></div><span class="btn pri" style="height:40px;border-radius:12px;font-size:14px;box-shadow:none">Save expense</span></div>
+ <div class="float" style="left:0;top:18px;transform:rotate(6deg)">${tile('food','sm')}<div class="col"><span class="t-bs">Swiggy</span><span class="t-cap c2">−₹489 · Food</span></div></div>
+ <div class="float" style="left:176px;top:222px;transform:rotate(-5deg)">${tile('transport','sm')}<div class="col"><span class="t-bs">Uber</span><span class="t-cap c2">−₹245 · Transport</span></div></div>
+ <div style="position:absolute;left:282px;top:40px;width:44px;height:44px;border-radius:22px;background:var(--wn);color:#fff;display:grid;place-items:center;box-shadow:var(--sh)">${ic('rupee','s22')}</div>`);
+SCR.onb2=()=>onb(1,'See where your money really goes','Clear charts and plain-language insights turn your transactions into patterns you can act on.',`
+ <div style="position:absolute;left:46px;top:15px;width:270px;height:270px;border-radius:50%;background:var(--tint)"></div>
+ <div class="card" style="position:absolute;left:20px;top:40px;width:230px;padding:18px;gap:12px;border-radius:24px"><span class="t-cap c2">Last 7 days</span><span class="amt-l">₹6,240</span><div class="row" style="align-items:flex-end;gap:10px;height:90px">${WEEK.map((w,i)=>`<i style="display:block;width:18px;border-radius:6px;height:${Math.round(w[1]/1506*84)+6}px;background:${i===1?'var(--pr)':'var(--acc)'};opacity:${i===1?1:.6}"></i>`).join('')}</div></div>
+ <div class="card" style="position:absolute;left:206px;top:150px;padding:14px;gap:6px;align-items:center;border-radius:24px">${donutSVG(96,16,catSegs(),'Spending by category')}<span class="t-cap c2">By category</span></div>
+ <div class="float" style="left:8px;top:236px;background:var(--oktint);color:var(--okt);padding:10px 14px">${ic('trend-down','s18')}<span class="t-bs">Food −12% vs Oct</span></div>`);
+SCR.onb3=()=>onb(2,'Budget smarter, reach goals sooner','Set monthly limits, get a heads-up before you overspend, and watch your savings goals grow.',`
+ <div style="position:absolute;left:36px;top:15px;width:270px;height:270px;border-radius:50%;background:var(--tint)"></div>
+ <div class="card" style="position:absolute;left:20px;top:36px;width:222px;padding:18px;gap:12px;border-radius:24px"><div class="row" style="gap:10px">${tileIc('plane','var(--c-transport)')}<div class="col"><span class="t-bs">Goa Vacation</span><span class="t-cap c2">Target Mar 2027</span></div></div><div class="row" style="gap:6px;align-items:baseline"><span class="amt-m">₹12,000</span><span class="t-cap c2">of ₹35,000 · 34%</span></div>${bar(34.3)}</div>
+ <div class="card" style="position:absolute;left:132px;top:172px;width:204px;padding:16px;gap:8px;border-radius:20px"><span class="t-cap c2">Left to spend in Nov</span><span class="amt-l cok">₹11,550</span>${bar(71.1)}<span class="t-cap c2">71% of ₹40,000 used</span></div>
+ <div style="position:absolute;left:276px;top:20px;width:48px;height:48px;border-radius:24px;background:var(--ok);color:#fff;display:grid;place-items:center;box-shadow:var(--sh)">${ic('check')}</div>`);
+SCR.signin=(err)=>{err=err||S.signErr;const cr=S.authMode==='create';return `<div class="scr">${sb()}
+ <div class="pad" style="padding-top:20px;gap:24px">
+  <span class="row" style="gap:8px;font-weight:800;letter-spacing:2px;font-size:16px"><svg width="28" height="28" viewBox="0 0 48 48" fill="none" stroke="var(--pr)" stroke-linecap="round"><use href="#i-mark"/></svg>FINOVA</span>
+  <div class="col" style="gap:6px"><h1 class="t-h1">${cr?'Create your account':'Welcome back'}</h1><p class="t-bl c2">${cr?'It takes a minute. Your entries stay private.':'Sign in to see your money at a glance.'}</p></div>
+  ${err?`<div class="banner err" role="alert">${ic('alert','s20')}<span>We couldn’t sign you in. Check the highlighted fields and try again.</span></div>`:''}
+  <div class="col" style="gap:16px">
+   ${cr?`<div class="field"><label ${PROTO?'for="p-name"':''}>Full name</label><div class="inp">${ic('user','s20')}<input ${PROTO?'id="p-name"':'tabindex="-1"'} value="Aarav Sharma" autocomplete="name"></div></div>`:''}
+   <div class="field"><label ${PROTO?'for="p-email"':''}>Email address</label><div class="inp ${err?'err':'focus'}">${ic(err?'alert':'mail','s20')}<input ${PROTO?'id="p-email"':'tabindex="-1"'} type="email" value="${err?'aarav.sharma@':'aarav.sharma@email.com'}" autocomplete="email" aria-invalid="${!!err}"></div>${err?`<span class="help err">${ic('alert','s16')}Enter a full email address, e.g. name@domain.com</span>`:''}</div>
+   <div class="field"><div class="row between"><label class="lbl" ${PROTO?'for="p-pwd"':''}>Password</label>${cr?'':'<button class="t-bs cb" style="height:32px">Forgot password?</button>'}</div><div class="inp ${err?'err':''}">${ic('lock','s20')}<input ${PROTO?'id="p-pwd"':'tabindex="-1"'} type="${S.pwd?'text':'password'}" value="Finova@2026" autocomplete="${cr?'new-password':'current-password'}"><button data-act="pwd" aria-label="${S.pwd?'Hide':'Show'} password" style="width:44px;height:44px;display:grid;place-items:center;margin-right:-12px;color:var(--tx2)">${ic(S.pwd?'eye-off':'eye','s20')}</button></div>${err?`<span class="help err">${ic('alert','s16')}Password doesn’t match this email. 4 attempts left.</span>`:(cr?'<span class="help">At least 8 characters, with a number.</span>':'')}</div>
+  </div>
+  <button class="btn pri" data-act="signin">${cr?'Create account':'Sign in'}</button>
+  <div class="row" style="gap:12px"><span class="grow divline"></span><span class="t-cap c2">or continue with</span><span class="grow divline"></span></div>
+  <div class="row" style="gap:10px"><button class="btn sec" style="background:var(--sf);border:1px solid var(--bd);color:var(--tx)"><b style="font-size:16px">G</b>Google</button><button class="btn sec" style="background:var(--sf);border:1px solid var(--bd);color:var(--tx)">${ic('phone','s20')}Phone OTP</button></div>
+  <p class="t-cap c2" style="text-align:center">${ic('info','s16')} Google and OTP sign-in are shown as a concept.</p>
+  <p class="t-b c2" style="text-align:center">${cr?'Already have an account?':'New to Finova?'} <button class="t-bs cb" data-set="authMode:${cr?'signin':'create'}" style="height:44px">${cr?'Sign in':'Create account'}</button></p>
+ </div><div class="homebar"></div></div>`;};
+SCR['signin-error']=()=>SCR.signin(true);
+SCR.home=()=>{const wk=S.seg==='week';return `<div class="scr withnav">${sb()}
+ <div class="pad" style="padding-top:8px">
+  <div class="row between"><button class="row" data-go="profile" style="gap:12px"><span class="av">AS</span><span class="col"><span class="t-cap c2">Good morning,</span><span class="t-h3">Aarav</span></span></button><button class="ib" data-go="notifications" aria-label="Notifications, 3 unread">${ic('bell','s22')}<span class="dot"></span></button></div>
+  <div class="balance"><span class="deco"></span><span class="deco b"></span>
+   <div class="row between"><span class="t-bm" style="opacity:.85">Total balance</span><span class="pill" style="background:rgba(255,255,255,.16);color:#fff">${ic('check','s16')}On track</span></div>
+   <div class="col" style="gap:4px"><span class="amt-xl" style="font-size:38px">${inr(D.balance,1)}</span><span class="t-cap" style="opacity:.8">Opening ₹47,700 (1 Nov) + net ₹36,550 this month</span></div>
+   <div class="row" style="gap:10px"><div class="bsub"><span class="ci">${ic('income','s18')}</span><span class="col"><span class="t-cap" style="opacity:.8">Income</span><span class="amt-s">₹65,000</span></span></div><div class="bsub"><span class="ci">${ic('expense','s18')}</span><span class="col"><span class="t-cap" style="opacity:.8">Expenses</span><span class="amt-s">₹28,450</span></span></div></div>
+  </div>
+  <div class="qa">${[['expense','Add expense','add-expense'],['income','Add income','add-income'],['swap','Adjust','add-expense'],['chart','Analytics','analytics']].map(([i,l,g])=>`<button data-go="${g}"><span class="qi">${ic(i)}</span>${l}</button>`).join('')}</div>
+  <div class="card">
+   <div class="row between"><span class="t-h3">Spending</span><div style="width:150px">${seg('seg',[['week','Week'],['month','Month']],S.seg)}</div></div>
+   <div class="row between" style="align-items:flex-end"><div class="col"><span class="amt-l">${wk?'₹6,240':'₹28,450'}</span><span class="t-cap c2">${wk?'Last 7 days · 17–23 Nov':'November so far · by week'}</span></div><span class="pill ok">${ic('trend-down','s16')}${wk?'8% vs prior week':'5% vs Oct'}</span></div>
+   ${barChart()}
+  </div>
+  <button class="card" data-go="budget" style="gap:12px;text-align:left">
+   <div class="row between" style="width:100%"><span class="t-h3">November budget</span><span class="pill ok">On track</span></div>
+   <div class="row" style="gap:6px;align-items:baseline"><span class="amt-m">₹28,450</span><span class="t-b c2">of ₹40,000</span></div>
+   <div style="width:100%">${bar(71.1)}</div>
+   <div class="row between" style="width:100%"><span class="t-cap c2">71.1% used · 7 days left</span><span class="t-bs cok">₹11,550 left</span></div>
+  </button>
+  <div class="col" style="gap:4px"><div class="row between"><span class="t-h3">Recent transactions</span><button class="t-bs cb" data-go="transactions" style="height:44px">See all</button></div>
+  <div class="list">${['t1','t2','t3','t13'].map(id=>txRow(TX.find(t=>t.id===id))).join('')}</div></div>
+ </div>${toastHTML()}${nav('home')}</div>`;};
+function addScreen(inc){const cats=inc?[['Salary','briefcase','var(--c-income)'],['Freelance','laptop','var(--c-bills)'],['Allowance','gift','var(--c-shopping)'],['Refund','refresh','var(--c-transport)'],['Other','other','var(--c-other)']]:['food','transport','shopping','bills','entertainment','health','education','other'].map(k=>[k,CAT[k].ic,`var(--c-${k})`]);
+ const cur=inc?S.incCat:S.cat;const amt=inc?'65000':S.amount;const disp=!amt?'0':amt.includes('.')?inr(+amt.split('.')[0]).slice(1)+'.'+amt.split('.')[1]:inr(+amt).slice(1);
+ return `<div class="scr">${sb()}
+ <div class="hdr"><button class="ib" data-go="home" aria-label="Close">${ic('x','s22')}</button><h2>${inc?'Add income':'Add expense'}</h2><span class="ib ghost"></span></div>
+ <div style="padding:0 24px">${seg('_type',[['exp','Expense'],['inc','Income']],inc?'inc':'exp').replace('data-set="_type:exp"','data-go="add-expense"').replace('data-set="_type:inc"','data-go="add-income"')}</div>
+ <div class="big-amt" aria-live="polite"><span class="cur">₹</span><span class="n" style="${!inc&&S.amtErr?'color:var(--ert)':''}">${disp}</span>${inc?'':'<span class="caret"></span>'}</div>
+ ${!inc&&S.amtErr?`<p class="help err" style="justify-content:center;margin-top:-6px">${ic('alert','s16')}Enter an amount greater than ₹0</p>`:`<p class="t-cap c2" style="text-align:center;margin-top:-6px">${inc?'Adds to November income':CAT[S.cat].n+': '+inr(CAT[S.cat].budget-CAT[S.cat].spent)+' left this month'}</p>`}
+ <div style="padding:14px 24px 0" class="col"><span class="sec-t" style="margin-bottom:8px">${inc?'Source':'Category'}</span><div class="chips">${cats.map(([k,i,c])=>`<button class="chip ${cur===k?'on':''}" data-set="${inc?'incCat':'cat'}:${k}"><span class="tile" style="--c:${c}">${ic(i)}</span>${inc?k:CAT[k].s}</button>`).join('')}</div></div>
+ <div style="padding:14px 24px" class="gridf">
+  <button class="mini">${tileIc(inc?'briefcase':'store','var(--tx2)','sm')}<span class="col grow"><span class="k">${inc?'FROM':'MERCHANT'}</span><span class="val">${inc?'Employer · Salary':'Swiggy'}</span></span></button>
+  <button class="mini">${tileIc('calendar','var(--tx2)','sm')}<span class="col grow"><span class="k">DATE</span><span class="val">${inc?'Sun, 1 Nov':'Today, 23 Nov'}</span></span></button>
+  <button class="mini">${tileIc(inc?'cash':'scan','var(--tx2)','sm')}<span class="col grow"><span class="k">${inc?'RECEIVED VIA':'PAID WITH'}</span><span class="val">${inc?'Bank transfer':'UPI'}</span></span></button>
+  <button class="mini">${tileIc('note','var(--tx2)','sm')}<span class="col grow"><span class="k">NOTE · OPTIONAL</span><span class="val ${inc?'':'c2'}">${inc?'November salary':'Lunch with team'}</span></span></button>
+ </div>
+ ${inc?`<div style="padding:0 24px" class="col" style="gap:12px"><div class="row card flat" style="flex-direction:row;padding:14px 16px;gap:12px">${ic('repeat','s20')}<span class="grow col"><span class="t-bs">Repeats monthly</span><span class="t-cap c2">Reminder on the 1st · you still confirm it</span></span>${tog('weekly')}</div></div>
+ <div style="position:fixed;left:24px;right:24px;bottom:34px"><button class="btn pri" data-act="save-income">Save income · ₹65,000</button></div>`:`
+ <div style="position:fixed;left:0;right:0;bottom:0"><div style="padding:0 24px 10px;background:var(--bg)"><button class="btn pri" data-act="save-expense">Save expense</button></div>
+ <div class="kpad" role="group" aria-label="Amount keypad">${['1','2','3','4','5','6','7','8','9','.','0','del'].map(k=>`<button class="${k==='.'||k==='del'?'fn':''}" data-key="${k}" aria-label="${k==='del'?'Delete digit':k}">${k==='del'?ic('backspace','s28'):k}</button>`).join('')}</div></div>`}
+ ${inc?'<div class="homebar"></div>':''}</div>`;}
+SCR['add-expense']=()=>addScreen(false);
+SCR['add-income']=()=>addScreen(true);
+SCR['expense-saved']=()=>{const a=+S.amount||489;const c=CAT[S.cat]||CAT.food;const sp=c.spent;const p=sp/c.budget*100;return `<div class="scr">${sb()}
+ <div class="hdr"><span class="ib ghost"></span><h2>Saved</h2><button class="ib" data-go="home" aria-label="Close">${ic('x','s22')}</button></div>
+ <div class="pad" style="align-items:center;text-align:center;gap:20px;padding-top:40px">
+  <div class="stepchk">${ic('check','s40')}</div>
+  <div class="col" style="gap:6px;align-items:center"><h1 class="t-h1">Expense saved</h1><p class="t-bl c2">${inr(a)} · ${S.cat==='food'?'Swiggy · ':''}${c.n}<br>Today, 1:12 pm · UPI</p></div>
+  <div class="card" style="width:100%;text-align:left;gap:12px"><div class="row" style="gap:12px">${tile(S.cat||'food')}<div class="col grow"><span class="t-bs">${c.n} budget</span><span class="t-cap c2">${inr(sp)} of ${inr(c.budget)} · ${Math.round(p)}% used</span></div><span class="pill ${status(p)[0]}">${status(p)[1]}</span></div>${bar(p,`var(--c-${S.cat||'food'})`)}<span class="t-cap c2">${inr(c.budget-sp)} left in ${c.n} for the next 7 days.</span></div>
+  <div class="card flat" style="width:100%;text-align:left;flex-direction:row;align-items:center;gap:12px;padding:16px">${ic('pie','s20')}<span class="t-b grow">Monthly budget now <b>71.1% used</b> · ₹11,550 left</span></div>
+ </div>
+ <div style="position:fixed;left:24px;right:24px;bottom:34px;display:flex;flex-direction:column;gap:8px"><button class="btn pri" data-go="home">Done</button><button class="btn ter" data-go="add-expense">Add another expense</button></div><div class="homebar"></div></div>`;};
+function txList(){let list=TX.filter(t=>S.filter==='all'||(S.filter==='exp'?t.a<0:t.a>0));if(S.q){const q=S.q.toLowerCase();list=list.filter(t=>t.m.toLowerCase().includes(q)||CAT[t.c].n.toLowerCase().includes(q)||(t.note||'').toLowerCase().includes(q));}
+ if(!list.length)return `<div class="empty" style="padding-top:28px"><div class="illus" style="width:96px;height:96px">${ic('search','s40')}</div><h3 class="t-h3">No results for “${S.q.replace(/[<>&"]/g,'')}”</h3><p class="t-b c2">Try a merchant name like “Swiggy”, a category, or clear filters.</p><button class="btn sec sm" data-act="clearq">Clear search</button></div>`;
+ const days=[...new Set(list.map(t=>t.day))];
+ return days.map(d=>{const items=list.filter(t=>t.day===d);const tot=items.reduce((a,b)=>a+b.a,0);const lab=d==='23'?'Today · '+DAYNAME[d]:d==='22'?'Yesterday · '+DAYNAME[d]:DAYNAME[d];return `<div class="col"><div class="row between" style="padding:12px 8px 4px"><span class="t-over c2">${lab}</span><span class="t-cap c2" style="font-variant-numeric:tabular-nums">${sgn(tot)}</span></div>${items.map(txRow).join('')}</div>`+(d==='17'&&S.filter!=='inc'&&!S.q?`<button class="btn sec sm" style="margin:8px auto;display:flex">Load earlier · 1–16 Nov</button>`:'');}).join('');}
+SCR.transactions=()=>`<div class="scr withnav">${sb()}
+ <div class="hdr"><button class="ib" data-go="home" aria-label="Back">${ic('chevron-left','s22')}</button><h2>Transactions</h2><button class="ib" data-go="add-expense" aria-label="Add transaction">${ic('plus','s22')}</button></div>
+ <div class="pad" style="padding-top:4px;gap:16px">
+  <div class="row" style="gap:10px"><label class="inp grow" style="height:48px">${ic('search','s20')}<input ${PROTO?'id="p-search"':'tabindex="-1"'} placeholder="Search merchants or notes" value="${S.q.replace(/"/g,'&quot;')}" aria-label="Search transactions"></label><button class="ib" style="width:48px;height:48px;border-radius:14px" aria-label="Filters: November 2026">${ic('filter','s20')}</button></div>
+  ${seg('filter',[['all','All'],['exp','Expenses'],['inc','Income']],S.filter)}
+  <div class="row" style="gap:10px"><div class="mini grow" style="min-height:0">${ic('expense','s18')}<span class="col"><span class="k">SPENT IN NOV</span><span class="amt-s">−₹28,450</span></span></div><div class="mini grow" style="min-height:0;color:var(--okt)">${ic('income','s18')}<span class="col"><span class="k">RECEIVED</span><span class="amt-s">+₹65,000</span></span></div></div>
+  <div class="list" style="margin:0 -8px">${txList()}</div>
+ </div>${toastHTML()}${nav('home')}</div>`;
+SCR.txn=()=>{const t=TX.find(x=>x.id===S.txId)||TX[0];const inc=t.a>0;const c=CAT[t.c];return `<div class="scr">${sb()}
+ ${hdr('Transaction','transactions',`<button class="ib" data-go="add-expense" aria-label="Edit">${ic('edit','s20')}</button>`)}
+ <div class="pad" style="gap:20px">
+  <div class="col" style="align-items:center;gap:10px;padding:8px 0 4px">${tile(t.c,'lg')}<span class="t-h3">${t.m}</span><span class="amt-xl ${inc?'pos':''}">${(inc?'+':'−')+inr(t.a,1)}</span><span class="pill ${inc?'ok':'nt'}">${ic(inc?'income':'expense','s16')}${inc?'Income':'Expense · '+c.n}</span></div>
+  <div class="card" style="gap:0;padding:4px 20px">${[['calendar','Date & time',(DAYNAME[t.day]+' 2026').replace(', ',', ')+' · '+t.t],[inc?'cash':'scan','Payment method',t.pay],[c.ic,'Category',inc?'Salary':c.n],['note','Note',t.note||'—'],['edit','Added','Manually · 23 Nov, 1:14 pm']].map(([i,k,v])=>`<div class="setrow"><span class="si">${ic(i,'s18')}</span><span class="col grow"><span class="t-cap c2">${k}</span><span class="t-bs">${v}</span></span></div>`).join('')}</div>
+  ${inc?'':`<div class="card flat" style="gap:10px"><div class="row between"><span class="t-bs">${c.n} budget</span><span class="t-cap c2">${inr(c.spent)} / ${inr(c.budget)}</span></div>${bar(c.spent/c.budget*100,`var(--c-${t.c})`)}<span class="t-cap c2">This expense is ${(Math.abs(t.a)/c.spent*100).toFixed(1)}% of your ${c.n} spending in November.</span></div>`}
+  <div class="row" style="gap:12px"><button class="btn sec" data-go="add-expense">${ic('edit','s20')}Edit</button><button class="btn ter" style="color:var(--ert)" data-act="delete-open">${ic('trash','s20')}Delete</button></div>
+ </div>${S.dialog?dialogHTML(t):''}<div class="homebar"></div></div>`;};
+const dialogHTML=(t)=>`<div class="scrim"><div class="dialog" role="alertdialog" aria-modal="true" aria-labelledby="dlgT"><span class="tile lg" style="--c:var(--ert);border-radius:32px">${ic('trash')}</span><h3 class="t-h3" id="dlgT">Delete this transaction?</h3><p class="t-b c2">${t.m} · ${sgn(t.a)} on ${DAYNAME[t.day].split(', ')[1]} will be removed from your history and budgets. You can undo for 4 seconds.</p><div class="row" style="gap:12px;width:100%"><button class="btn sec" data-act="delete-cancel">Cancel</button><button class="btn des" data-act="delete-confirm">Delete</button></div></div></div>`;
+SCR['txn-delete']=()=>{const keep=S.dialog;S.dialog=true;const h=SCR.txn();S.dialog=keep;return h;};
+SCR.analytics=()=>`<div class="scr withnav">${sb()}
+ <div class="hdr" style="padding:4px 24px"><h2 class="t-h2" style="font-size:22px">Analytics</h2><button class="chip plain" style="height:40px" aria-label="Change month">Nov 2026 ${ic('chevron-down','s16')}</button></div>
+ <div class="pad" style="padding-top:4px">
+  <div class="card" style="gap:14px"><div class="row between"><span class="t-cap c2">Spent · 1–23 Nov</span><span class="pill ok">${ic('trend-down','s16')}5.3% vs 1–23 Oct</span></div><span class="amt-xl">₹28,450</span>
+   <div class="row" style="gap:10px">${[['Income','₹65,000','cok'],['Net saved','+₹36,550',''],['Savings rate','56%','']].map(([k,v,c])=>`<div class="col grow" style="background:var(--sf2);border-radius:14px;padding:10px 12px;gap:2px"><span class="t-cap c2">${k}</span><span class="amt-s ${c}">${v}</span></div>`).join('')}</div></div>
+  <div class="card"><div class="col" style="gap:2px"><span class="t-h3">Income vs expenses</span><span class="t-cap c2">Last 6 months · tap a point</span></div>${lineChart()}<div class="legend"><span><i style="background:var(--ok)"></i>Income ₹65,000/mo</span><span><i style="background:var(--pr)"></i>Expenses</span></div><p class="t-cap c2">Summary: spending peaked in October (₹31,200). November is ₹1,590 lower than the same dates in October.</p></div>
+  <button class="card" data-go="categories" style="text-align:left"><div class="row between" style="width:100%"><span class="t-h3">By category</span><span class="t-bs cb row" style="gap:2px">All 8 ${ic('chevron-right','s18')}</span></div>
+   <div class="row" style="gap:18px;width:100%"><div class="ring" style="width:124px;height:124px">${donutSVG(124,18,catSegs(),'Spending by category')}<span class="col" style="align-items:center;position:absolute"><span class="amt-s">₹28,450</span><span class="t-cap c2">total</span></span></div>
+   <div class="col grow" style="gap:10px">${['bills','food','shopping','transport'].map(k=>`<div class="row between"><span class="row t-cap" style="gap:8px;font-weight:600"><i style="width:10px;height:10px;border-radius:3px;background:var(--c-${k})"></i>${CAT[k].s}</span><span class="t-cap c2" style="font-variant-numeric:tabular-nums">${PCT[k]}%</span></div>`).join('')}<span class="t-cap c2">+ 4 more · 15%</span></div></div></button>
+  <div class="row" style="gap:12px">${[['food','−12%','Food','vs ₹6,640','ok','trend-down'],['transport','+27%','Transport','vs ₹1,720','er','trend-up']].map(([k,v,l,s,st,i])=>`<div class="card grow" style="padding:16px;gap:8px">${tile(k,'sm')}<span class="amt-m ${st==='ok'?'cok':'cer'} row" style="gap:4px">${ic(i,'s18')}${v}</span><span class="t-cap c2">${l} · ${s} (1–23 Oct)</span></div>`).join('')}</div>
+  <button class="card" data-go="insights" style="flex-direction:row;align-items:center;gap:14px;background:var(--tint);box-shadow:none;text-align:left">${tileIc('sparkles','var(--pr)')}<span class="col grow"><span class="t-bs">4 new insights</span><span class="t-cap c2">You’re on pace to spend ≈ ₹33,800 this month</span></span>${ic('chevron-right','s20')}</button>
+ </div>${nav('analytics')}</div>`;
+SCR.categories=()=>`<div class="scr">${sb()}${hdr('Spending by category','analytics')}
+ <div class="pad" style="padding-top:4px">
+  <div class="col" style="align-items:center;gap:8px"><div class="ring" style="width:200px;height:200px">${donutSVG(200,26,catSegs(),'Spending by category, total ₹28,450')}<span class="col" style="align-items:center;position:absolute"><span class="t-cap c2">November · 1–23</span><span class="amt-l">₹28,450</span><span class="t-cap c2">8 categories</span></span></div></div>
+  <div class="card" style="gap:0;padding:8px 16px">${CATKEYS.map(k=>{const c=CAT[k];const ch=(c.spent-c.prev)/c.prev*100;const chs=Math.abs(ch)<0.5?'Same as Oct':(ch>0?'+':'−')+Math.abs(Math.round(ch))+'% vs Oct';return `<div class="setrow" style="gap:12px">${tile(k,'sm')}<div class="col grow" style="gap:6px"><div class="row between"><span class="t-bs">${c.n}</span><span class="amt-s">${inr(c.spent)}</span></div>${bar(PCT[k]/41*100,`var(--c-${k})`)}<div class="row between"><span class="t-cap c2">${PCT[k]}% of spending</span><span class="t-cap ${Math.abs(ch)<0.5?'c2':ch>0?'cer':'cok'}">${chs}</span></div></div></div>`;}).join('')}</div>
+  <p class="t-cap c2" style="text-align:center">Percentages are rounded and add up to 100%. “vs Oct” compares 1–23 Oct.</p>
+ </div><div class="homebar"></div></div>`;
+const planTabs=(cur)=>`<div style="padding:0 24px">${seg('_plan',[['budget','Budget'],['goals','Goals'],['bills','Bills']],cur).replace('data-set="_plan:budget"','data-go="budget"').replace('data-set="_plan:goals"','data-go="goals"').replace('data-set="_plan:bills"','data-go="bills"')}</div>`;
+SCR.budget=()=>`<div class="scr withnav">${sb()}
+ <div class="hdr" style="padding:4px 24px"><h2 class="t-h2" style="font-size:22px">Plan</h2><button class="ib" data-go="budget-edit" aria-label="New budget">${ic('plus','s22')}</button></div>
+ ${planTabs('budget')}
+ <div class="pad" style="padding-top:16px">
+  <div class="card" style="gap:14px"><div class="row between"><span class="t-cap c2">November budget</span><span class="pill ok">${ic('check','s16')}On track</span></div>
+   <div class="row" style="gap:16px"><div class="ring" style="width:104px;height:104px">${ringSVG(104,12,.711,'var(--pr)')}<span class="col" style="align-items:center"><span class="amt-m">71.1%</span><span class="t-cap c2">used</span></span></div>
+   <div class="col grow" style="gap:8px">${[['Budget','₹40,000',''],['Spent','₹28,450',''],['Remaining','₹11,550','cok']].map(([k,v,c])=>`<div class="row between"><span class="t-b c2">${k}</span><span class="amt-s ${c}">${v}</span></div>`).join('')}</div></div>
+   <div class="banner info" style="padding:10px 12px">${ic('info','s18')}<span>7 days left · you can spend about <b>₹1,650 a day</b> and stay within budget.</span></div>
+   <div class="row" style="gap:10px"><button class="btn sec sm grow" data-go="budget-edit" style="width:100%">${ic('edit','s18')}Edit budget</button><button class="btn sec sm grow" data-go="budget-edit" style="width:100%">${ic('plus','s18')}New</button></div></div>
+  <span class="sec-t">Category budgets · ₹40,000 total</span>
+  <div class="col" style="gap:12px">${CATKEYS.map(k=>{const c=CAT[k];const p=c.spent/c.budget*100;const [st,lab]=status(p);return `<button class="card" data-go="budget-edit" data-set="bcat:${k}" style="padding:16px;gap:10px;text-align:left"><div class="row" style="gap:12px;width:100%">${tile(k,'sm')}<span class="col grow"><span class="t-bs">${c.n}</span><span class="t-cap c2">${inr(c.spent)} of ${inr(c.budget)}</span></span><span class="col" style="align-items:flex-end;gap:2px"><span class="pill ${st}">${lab}</span><span class="t-cap c2">${Math.round(p)}%</span></span></div><div style="width:100%">${bar(p,st==='wn'?'var(--wn)':st==='er'?'var(--er)':`var(--c-${k})`)}</div></button>`;}).join('')}</div>
+ </div>${toastHTML()}${nav('budget')}</div>`;
+SCR['budget-edit']=()=>{const k=S.bcat;const c=CAT[k];const lim=+S.limit;const amt=Math.round(lim*S.thr/100);return `<div class="scr">${sb()}${hdr('Edit budget','budget')}
+ <div class="pad" style="padding-top:4px;gap:22px">
+  <div class="col" style="gap:10px"><span class="sec-t" style="margin:0">Category</span><div class="chips">${CATKEYS.map(x=>`<button class="chip ${x===k?'on':''}" data-set="bcat:${x}">${tile(x)}${CAT[x].s}</button>`).join('')}</div></div>
+  <div class="field"><label class="lbl">Monthly limit for ${c.n}</label><div class="inp focus" style="height:64px"><span class="amt-l" style="color:var(--tx2)">₹</span><span class="amt-l v">${inr(lim).slice(1)}</span></div>
+   <div class="row" style="gap:8px">${['4000','5000','5500','6000'].map(v=>`<button class="chip plain ${S.limit===v?'on':''}" data-set="limit:${v}" style="height:36px;flex:1;justify-content:center;padding:0 6px">${inr(+v)}</button>`).join('')}</div>
+   <span class="help">${ic('info','s16')}You spent ${inr(c.prev)} on ${c.n} in 1–23 Oct and ${inr(c.spent)} so far this month.</span></div>
+  <div class="col" style="gap:10px"><span class="sec-t" style="margin:0">Period</span>${seg('period',[['Monthly','Monthly'],['Weekly','Weekly'],['Custom','Custom']],S.period)}<span class="t-cap c2">${S.period==='Monthly'?'Resets on the 1st of every month.':S.period==='Weekly'?'Resets every Monday. '+inr(Math.round(lim/4.3))+' a week.':'Choose start and end dates on the next step.'}</span></div>
+  <div class="card flat" style="gap:14px"><div class="row between"><span class="col"><span class="t-bs">Alert me at</span><span class="t-cap c2">We’ll notify you at ${inr(amt)} spent</span></span>${tog('budget')}</div>
+   <div class="row" style="gap:8px">${[50,75,80,90].map(v=>`<button class="chip plain ${S.thr===v?'on':''}" data-set="thr:${v}" style="height:36px;flex:1;justify-content:center">${v}%</button>`).join('')}</div>
+   <div class="row between"><span class="t-b">Also alert when I go over</span>${tog('goals')}</div></div>
+  <button class="btn pri" data-act="save-budget">Save budget</button>
+ </div><div class="homebar"></div></div>`;};
+SCR.goals=()=>`<div class="scr withnav">${sb()}
+ <div class="hdr" style="padding:4px 24px"><h2 class="t-h2" style="font-size:22px">Plan</h2><button class="ib" data-go="goal-new" aria-label="New goal">${ic('plus','s22')}</button></div>
+ ${planTabs('goals')}
+ <div class="pad" style="padding-top:16px">
+  <div class="balance" style="gap:12px"><span class="deco"></span><span class="t-bm" style="opacity:.85">Saved across 3 goals</span><div class="row" style="gap:8px;align-items:baseline"><span class="amt-xl">₹1,19,000</span><span class="t-b" style="opacity:.8">of ₹2,15,000</span></div><div class="bar" style="background:rgba(255,255,255,.2)"><i style="width:55.3%;background:#fff"></i></div><span class="t-cap" style="opacity:.85">55% funded · tracked separately from your available balance</span></div>
+  ${GOALS.map(g=>{const p=g.saved/g.target;return `<div class="card" style="gap:14px"><div class="row" style="gap:14px"><div class="ring" style="width:64px;height:64px">${ringSVG(64,7,p,g.c)}<span style="color:${g.c}">${ic(g.ic,'s22')}</span></div><div class="col grow" style="gap:2px"><span class="t-h3">${g.n}</span><span class="t-cap c2">Target ${g.date}</span></div><span class="amt-m">${(p*100).toFixed(p*100%1?1:0)}%</span></div>
+   <div class="row between"><span class="row" style="gap:6px;align-items:baseline"><span class="amt-m">${inr(g.saved)}</span><span class="t-cap c2">of ${inr(g.target)}</span></span>${g.k==='emergency'?'<span class="pill ok">Milestone 65%</span>':''}</div>${bar(p*100,g.c)}
+   <div class="row between"><span class="t-cap c2">Save ${inr(g.monthly)}/month to hit ${g.date}</span><button class="t-bs cb" style="height:36px">Add money</button></div></div>`;}).join('')}
+  <button class="btn sec" data-go="goal-new">${ic('plus','s20')}New savings goal</button>
+ </div>${toastHTML()}${nav('budget')}</div>`;
+SCR['goal-new']=()=>`<div class="scr">${sb()}${hdr('New savings goal','goals')}
+ <div class="pad" style="padding-top:4px;gap:20px">
+  <div class="col" style="gap:10px"><span class="sec-t" style="margin:0">Icon</span><div class="iconpick">${['phone','laptop','plane','shield','gift','home','education','transport','music','target','health','shopping'].map(i=>`<button class="${S.goalIcon===i?'on':''}" data-set="goalIcon:${i}" aria-label="${i}" aria-pressed="${S.goalIcon===i}">${ic(i,'s22')}</button>`).join('')}</div></div>
+  <div class="field"><label class="lbl">Goal name</label><div class="inp focus"><span class="v">New Phone</span></div></div>
+  <div class="gridf"><div class="field"><label class="lbl">Target amount</label><div class="inp"><span class="v amt-m">₹60,000</span></div></div><div class="field"><label class="lbl">Saved so far</label><div class="inp"><span class="v amt-m">₹8,000</span></div></div></div>
+  <div class="field"><label class="lbl">Target date</label><div class="inp">${ic('calendar','s20')}<span class="v">31 Aug 2027</span>${ic('chevron-down','s18')}</div></div>
+  <div class="card flat" style="gap:10px;background:var(--tint);border:0"><div class="row" style="gap:12px"><div class="ring" style="width:52px;height:52px">${ringSVG(52,6,8000/60000,'var(--pr)')}<span style="color:var(--pr)">${ic(S.goalIcon,'s18')}</span></div><div class="col grow"><span class="t-bs">Save ₹5,778 a month</span><span class="t-cap c2">₹52,000 to go over 9 months (Dec–Aug)</span></div></div></div>
+  <button class="btn pri" data-act="save-goal">Save goal</button>
+ </div><div class="homebar"></div></div>`;
+SCR.bills=()=>`<div class="scr withnav">${sb()}
+ <div class="hdr" style="padding:4px 24px"><h2 class="t-h2" style="font-size:22px">Plan</h2><button class="ib" aria-label="Add bill">${ic('plus','s22')}</button></div>
+ ${planTabs('bills')}
+ <div class="pad" style="padding-top:16px;gap:16px">
+  <div class="card" style="flex-direction:row;align-items:center;gap:14px">${tileIc('repeat','var(--pr)')}<div class="col grow"><span class="t-cap c2">Due in the next 30 days</span><span class="amt-l">₹12,418</span></div><span class="pill nt">6 bills</span></div>
+  <div class="banner info">${ic('info','s20')}<span>Finova reminds you before each due date. It doesn’t pay bills: tap <b>Mark as paid</b> after you pay.</span></div>
+  <span class="sec-t">Upcoming</span>
+  <div class="card" style="gap:0;padding:4px 16px">${BILLS.map((b,i)=>`<div class="setrow" style="gap:12px">${tileIc(b.ic,b.c,'sm')}<div class="col grow" style="gap:2px"><span class="t-bs">${b.n}</span><span class="t-cap c2">${b.sub}</span>${i===0?'<button class="t-bs cb" style="text-align:left;height:28px">Mark as paid</button>':''}</div><div class="col" style="align-items:flex-end;gap:4px"><span class="amt-s">${b.est?'~':''}${inr(b.a)}</span><span class="pill ${b.inD<=7?'wn':'nt'}">${b.inD<=7?ic('bell','s16'):''}${b.due}</span></div></div>`).join('')}</div>
+  <div class="row between card flat" style="flex-direction:row;padding:16px"><span class="row" style="gap:10px">${ic('check','s20')}<span class="col"><span class="t-bs">Paid in November</span><span class="t-cap c2">6 bills · ₹12,418 (in Bills & Fun)</span></span></span>${ic('chevron-down','s20')}</div>
+ </div>${nav('budget')}</div>`;
+SCR.insights=()=>`<div class="scr">${sb()}${hdr('Insights','analytics')}
+ <div class="pad" style="padding-top:4px;gap:16px">
+  <div class="balance" style="gap:10px"><span class="deco"></span><span class="row" style="gap:8px">${ic('sparkles','s20')}<span class="t-bm">November so far</span></span><span class="t-h3" style="font-weight:700">You’re on track. At this pace you’ll spend about ₹33,800 by 30 Nov, ₹6,200 under budget.</span></div>
+  ${[
+  ['food','ok','trend-down','You spent 12% less on food','₹5,840 vs ₹6,640 over the same dates in October. That’s ₹800 less so far.',[[5840,'Nov'],[6640,'Oct']],'See food spending','categories'],
+  ['transport','er','trend-up','Transport is up 27%','₹2,180 vs ₹1,720 last month. Cab rides (Uber, Ola) added ₹555 this week.',[[2180,'Nov'],[1720,'Oct']],'Set a transport alert','budget-edit'],
+  ['shopping','wn','alert','You’re 75% through your shopping budget','₹4,120 of ₹5,500 spent with 7 days left. ₹1,380 remains.',null,'Review budget','budget'],
+  ['bills','wn','info','Bills is at 94%','₹700 left. Your Jio recharge (₹299, due 30 Nov) still fits.',null,'View bills','bills']
+  ].map(([k,st,i,t,b,cmp,a,g])=>`<div class="card" style="gap:12px"><div class="row" style="gap:12px;align-items:flex-start">${tile(k,'sm')}<div class="col grow" style="gap:4px"><span class="t-bs">${t}</span><span class="t-b c2">${b}</span></div></div>
+   ${cmp?`<div class="col" style="gap:6px">${cmp.map(([v,l],j)=>`<div class="row" style="gap:10px"><span class="t-cap c2" style="width:28px">${l}</span><div class="grow bar" style="height:10px"><i style="width:${v/6640*100}%;background:${j?'var(--bd2)':`var(--c-${k})`}"></i></div><span class="t-cap" style="width:52px;text-align:right;font-variant-numeric:tabular-nums">${inr(v)}</span></div>`).join('')}</div>`:bar(k==='shopping'?74.9:94.4,'var(--wn)')}
+   <button class="t-bs cb row" data-go="${g}" style="gap:4px;height:32px">${a}${ic('chevron-right','s16')}</button></div>`).join('')}
+  <p class="t-cap c2" style="text-align:center">Insights use only the transactions you’ve entered. They aren’t financial advice.</p>
+ </div><div class="homebar"></div></div>`;
+SCR.notifications=()=>{const N=[
+ [1,'shopping','You’re 75% through Shopping','₹4,120 of ₹5,500 spent with 7 days left in November.','2h ago · Budget alert'],
+ [1,'phone','Jio recharge due in 7 days','₹299 on 30 Nov. This is a reminder only.','3h ago · Bill reminder'],
+ [1,'food','Expense saved','Swiggy · ₹489 added to Food & Drinks.','1:12 pm · Entry'],
+ [0,'savings','Emergency Fund hit 65%','₹65,000 of ₹1,00,000. ₹35,000 to go.','Yesterday · Milestone'],
+ [0,'chart','Your week in numbers','₹6,240 spent in the last 7 days, 8% less than the week before.','Mon 9:00 am · Weekly summary'],
+ [0,'bills','Bills at 94% of budget','₹11,800 of ₹12,500 used after rent and electricity.','10 Nov · Budget alert']];
+ const list=S.ntab==='unread'?N.filter(n=>n[0]):N;
+ return `<div class="scr">${sb()}${hdr('Notifications','home',`<button class="ib" data-go="settings" aria-label="Notification preferences">${ic('settings','s20')}</button>`)}
+ <div class="pad" style="padding-top:4px;gap:16px">${seg('ntab',[['all','All'],['unread','Unread · 3']],S.ntab)}
+ <div class="row between"><span class="sec-t" style="margin:0">Today</span><button class="t-bs cb" style="height:32px">Mark all as read</button></div>
+ <div class="col" style="gap:10px">${list.map(([u,k,t,b,m],i)=>`${i===3?'<span class="sec-t" style="margin:6px 0 0">Earlier</span>':''}<div class="row" style="align-items:flex-start;gap:12px;padding:16px;border-radius:16px;${u?'background:var(--sf);border:1px solid var(--bd)':''}">${k==='phone'?tileIc('phone','var(--c-transport)','sm'):k==='chart'?tileIc('chart','var(--c-bills)','sm'):tile(k,'sm')}<div class="col grow" style="gap:3px"><span class="t-bs" style="font-weight:${u?700:600}">${t}</span><span class="t-b c2">${b}</span><span class="t-cap c2">${m}</span></div>${u?'<span style="width:8px;height:8px;border-radius:4px;background:var(--pr);margin-top:6px;flex:none" aria-label="Unread"></span>':''}</div>`).join('')}</div>
+ <button class="card flat" data-go="settings" style="flex-direction:row;align-items:center;gap:12px;padding:16px;text-align:left">${ic('settings','s20')}<span class="col grow"><span class="t-bs">Notification preferences</span><span class="t-cap c2">Budget alerts, bill reminders, weekly summary</span></span>${ic('chevron-right','s20')}</button>
+ </div><div class="homebar"></div></div>`;};
+SCR.profile=()=>`<div class="scr withnav">${sb()}
+ <div class="hdr" style="padding:4px 24px"><h2 class="t-h2" style="font-size:22px">Profile</h2><button class="ib" data-go="settings" aria-label="Settings">${ic('settings','s20')}</button></div>
+ <div class="pad" style="padding-top:4px">
+  <div class="col" style="align-items:center;gap:8px"><span class="av lg">AS</span><span class="t-h2">Aarav Sharma</span><span class="t-b c2">aarav.sharma@email.com</span><span class="pill br">Tracking since Jun 2026</span></div>
+  <div class="row" style="gap:10px">${[['92','entries in Nov'],['56%','savings rate'],['3','active goals']].map(([v,l])=>`<div class="card grow" style="padding:14px;gap:2px;align-items:center"><span class="amt-m">${v}</span><span class="t-cap c2">${l}</span></div>`).join('')}</div>
+  <span class="sec-t">Preferences</span>
+  <div class="card" style="gap:0;padding:4px 16px">${[['rupee','Currency','INR (₹)','settings'],['moon','Appearance',S.appear,'settings'],['bell','Notifications','4 on','notifications']].map(([i,k,v,g])=>`<button class="setrow" data-go="${g}"><span class="si">${ic(i,'s18')}</span><span class="t-bs grow">${k}</span><span class="t-b c2">${v}</span>${ic('chevron-right','s18')}</button>`).join('')}</div>
+  <span class="sec-t">Security & support</span>
+  <div class="card" style="gap:0;padding:4px 16px">${[['lock','Security','App lock on'],['download','Export data (CSV)','Concept'],['help','Help & support','']].map(([i,k,v])=>`<button class="setrow" data-go="settings"><span class="si">${ic(i,'s18')}</span><span class="t-bs grow">${k}</span><span class="t-b c2">${v}</span>${ic('chevron-right','s18')}</button>`).join('')}</div>
+  <button class="btn ter" style="color:var(--ert)" data-go="signin">${ic('logout','s20')}Log out</button>
+  <p class="t-cap c3" style="text-align:center">Finova 1.0 (concept) · Demo data</p>
+ </div>${nav('profile')}</div>`;
+SCR.settings=()=>`<div class="scr">${sb()}${hdr('Settings','profile')}
+ <div class="pad" style="padding-top:4px;gap:16px">
+  <span class="sec-t">Appearance</span>
+  <div class="card" style="gap:14px">${seg('appear',[['Light','Light'],['Dark','Dark'],['System','System']],S.appear)}<div class="row" style="gap:10px">${['Light','Dark'].map(m=>`<div class="grow" style="border-radius:14px;border:${(S.appear===m)?'2px solid var(--pr)':'1px solid var(--bd)'};padding:10px;background:${m==='Dark'?'#151829':'#F8F9FD'};display:grid;gap:6px"><i style="display:block;height:8px;width:60%;border-radius:4px;background:${m==='Dark'?'#F2F3FA':'#15172C'}"></i><i style="display:block;height:20px;border-radius:6px;background:${m==='Dark'?'#7C75FF':'#635BFF'}"></i><i style="display:block;height:6px;width:80%;border-radius:3px;background:${m==='Dark'?'#363B5A':'#E9EBF3'}"></i></div>`).join('')}</div></div>
+  <span class="sec-t">Currency</span>
+  <div class="card" style="gap:0;padding:4px 16px">${[['₹','Indian Rupee','INR',1],['$','US Dollar','USD',0],['€','Euro','EUR',0]].map(([s,n,c,on])=>`<div class="setrow"><span class="si" style="font-weight:700">${s}</span><span class="col grow"><span class="t-bs">${n}</span><span class="t-cap c2">${c}</span></span>${on?`<span style="color:var(--pr)">${ic('check','s22')}</span>`:''}</div>`).join('')}<p class="t-cap c2" style="padding:0 0 12px">Changes the display symbol only. Amounts aren’t converted.</p></div>
+  <span class="sec-t">Security</span>
+  <div class="card" style="gap:0;padding:4px 16px"><div class="setrow"><span class="si">${ic('lock','s18')}</span><span class="col grow"><span class="t-bs">App lock (PIN)</span><span class="t-cap c2">Ask for PIN after 1 minute</span></span>${tog('lock')}</div><div class="setrow"><span class="si">${ic('fingerprint','s18')}</span><span class="col grow"><span class="t-bs row" style="gap:6px">Biometric unlock <span class="badge">Concept</span></span><span class="t-cap c2">Fingerprint or face, where supported</span></span>${tog('bio')}</div></div>
+  <span class="sec-t">Notifications</span>
+  <div class="card" style="gap:0;padding:4px 16px">${[['budget','Budget alerts','At your chosen threshold'],['bills','Bill reminders','3 days and 1 day before'],['weekly','Weekly summary','Mondays, 9:00 am'],['entries','Entry confirmations','After each save']].map(([k,t,s])=>`<div class="setrow"><span class="col grow"><span class="t-bs">${t}</span><span class="t-cap c2">${s}</span></span>${tog(k)}</div>`).join('')}</div>
+  <span class="sec-t">Accessibility</span>
+  <div class="card" style="gap:0;padding:4px 16px"><div class="setrow" style="flex-wrap:wrap"><span class="si">${ic('type','s18')}</span><span class="col grow"><span class="t-bs">Text size</span><span class="t-cap c2">Follows system · 100%</span></span><div style="width:100%;display:flex;align-items:center;gap:10px;padding-top:6px"><span class="t-cap">A</span><div class="bar grow" style="height:6px"><i style="width:40%"></i></div><span class="t-h3">A</span></div></div><div class="setrow"><span class="col grow"><span class="t-bs">Reduce motion</span><span class="t-cap c2">Turns off slides and pulses</span></span>${tog('motion')}</div><div class="setrow"><span class="col grow"><span class="t-bs">Bold amounts</span><span class="t-cap c2">Heavier numbers for low vision</span></span>${tog('bignum')}</div></div>
+ </div><div class="homebar"></div></div>`;
+SCR.empty=()=>`<div class="scr withnav">${sb()}
+ <div class="hdr"><button class="ib" data-go="home" aria-label="Back">${ic('chevron-left','s22')}</button><h2>Transactions</h2><span class="ib ghost"></span></div>
+ <div class="pad" style="padding-top:4px">${seg('_f',[['all','All'],['exp','Expenses'],['inc','Income']],'all')}
+  <div class="empty" style="padding-top:60px;gap:16px"><div class="illus">${ic('note','s40')}</div><h2 class="t-h2">No transactions yet</h2><p class="t-bl c2">Log your first expense and Finova will start building your spending picture.</p><button class="btn pri" data-go="add-expense" style="width:auto">${ic('plus','s20')}Add your first expense</button><button class="btn ter" data-go="add-income" style="width:auto">Or add income</button></div>
+ </div>${nav('home')}</div>`;
+SCR['empty-2']=()=>`<div class="scr">${sb()}
+ <div class="pad" style="padding-top:16px;gap:16px">
+  <span class="sec-t">Empty search results</span>
+  <div class="card" style="gap:14px"><div class="inp" style="height:48px">${ic('search','s20')}<span class="v">Nykaa</span>${ic('x','s18')}</div><div class="empty"><div class="illus" style="width:80px;height:80px">${ic('search','s28')}</div><span class="t-h3">No results for “Nykaa”</span><span class="t-b c2">Check the spelling, or search by category or note.</span><button class="btn sec sm">Clear search</button></div></div>
+  <span class="sec-t">No budget created</span>
+  <div class="card" style="gap:14px"><div class="empty"><div class="illus" style="width:80px;height:80px">${ic('pie','s28')}</div><span class="t-h3">Set your first budget</span><span class="t-b c2">Start with one monthly limit. Most people begin with Food & Drinks.</span><button class="btn pri sm" data-go="budget-edit">Create a budget</button></div></div>
+  <span class="sec-t">No savings goals</span>
+  <div class="card flat" style="flex-direction:row;align-items:center;gap:14px;padding:16px">${tileIc('target','var(--pr)')}<span class="col grow"><span class="t-bs">Save for something</span><span class="t-cap c2">A trip, a laptop, a safety net</span></span><button class="btn sec sm" data-go="goal-new">Add goal</button></div>
+ </div><div class="homebar"></div></div>`;
+SCR.feedback=()=>`<div class="scr">${sb()}
+ <div class="pad" style="padding-top:16px;gap:16px">
+  <span class="sec-t">Invalid form input</span>
+  <div class="card" style="gap:12px"><div class="field"><span class="lbl">Amount</span><div class="inp err"><span class="amt-m">₹</span><span class="v amt-m">0</span>${ic('alert','s20')}</div><span class="help err">${ic('alert','s16')}Enter an amount greater than ₹0</span></div><div class="field"><span class="lbl">Target date</span><div class="inp err">${ic('calendar','s20')}<span class="v">12 Oct 2026</span></div><span class="help err">${ic('alert','s16')}Pick a date after today (23 Nov 2026)</span></div><span class="btn dis">Save goal</span></div>
+  <span class="sec-t">Success</span>
+  <div style="position:relative;height:56px"><div class="toast" style="position:static;animation:none">${'<span class="ti" style="background:var(--ok)">'+ic('check','s16')+'</span>'}<span class="grow">Expense saved · ₹489 added to Food & Drinks</span><b>Undo</b></div></div>
+  <span class="sec-t">Sync error</span>
+  <div class="banner err">${ic('cloud-off','s20')}<span class="grow">Couldn’t back up to your account. Your entries are safe on this device.<br><button class="t-bs" style="color:inherit;text-decoration:underline;height:32px">Try again</button></span></div>
+  <span class="sec-t">Loading</span>
+  <div class="card" style="gap:6px;padding:12px 16px">${[0,1,2].map(()=>`<div class="row" style="gap:12px;padding:6px 0"><span class="skel" style="width:44px;height:44px;border-radius:14px"></span><span class="col grow" style="gap:8px"><span class="skel" style="width:140px;height:12px"></span><span class="skel" style="width:90px;height:10px"></span></span><span class="skel" style="width:60px;height:12px"></span></div>`).join('')}</div>
+  <span class="sec-t">Saving state</span>
+  <span class="btn pri" style="opacity:.9"><span class="spin"></span>Saving…</span>
+ </div><div class="homebar"></div></div>`;
+
+const LIST=[
+ ['Onboarding & sign in','Brand reveal, three onboarding steps, authentication',[
+  ['splash','01','Splash','Logo reveal on indigo gradient, progress loop.'],
+  ['onb1','02','Onboarding · Track your money','Manual entry promise, no bank login.'],
+  ['onb2','03','Onboarding · Understand spending','Floating chart cards preview analytics.'],
+  ['onb3','04','Onboarding · Achieve goals','Goal + budget cards, “Get Started”.'],
+  ['signin','05','Sign in / create account','Labels above fields, visibility toggle, concept SSO.'],
+  ['signin-error','05b','Sign in · validation error','Icon + text + border, summary banner.']]],
+ ['Home & transactions','The dashboard, adding money in and out, and history',[
+  ['home','06','Home dashboard','Balance with explained maths, quick actions, chart, budget, recent.'],
+  ['add-expense','07','Add expense','Thumb-zone keypad, category chips, 2×2 detail grid.'],
+  ['expense-saved','07b','Expense saved','Confirmation with budget impact.'],
+  ['add-income','08','Add income','Source chips, recurring reminder toggle.'],
+  ['transactions','09','Transaction history','Search, filter, grouped by day with day totals.'],
+  ['txn','10','Transaction details','All fields, budget impact, edit and delete.'],
+  ['txn-delete','10b','Delete confirmation','Destructive dialog, Cancel first, undo window.']]],
+ ['Analytics & insights','Understanding spending patterns',[
+  ['analytics','11','Analytics dashboard','Summary, income vs expenses, donut, trend cards.'],
+  ['categories','12','Spending by category','8 categories, shares sum to 100%, change vs October.'],
+  ['insights','18','Smart insights','Plain-language observations with evidence and an action.']]],
+ ['Plan: budgets, goals, bills','Everything under the Budget tab',[
+  ['budget','13','Monthly budget overview','₹40,000 · 71.1% used · daily safe-to-spend.'],
+  ['budget-edit','14','Create / edit budget','Category, limit with history hint, period, alert threshold.'],
+  ['goals','15','Savings goals','Rings + bars, monthly pace to each target date.'],
+  ['goal-new','16','Create savings goal','Icon picker, live monthly calculation.'],
+  ['bills','17','Recurring bills','Due dates and reminders; never implies auto-pay.']]],
+ ['Profile, settings & notifications','Account, preferences and alerts',[
+  ['notifications','19','Notifications','Unread vs read, grouped, link to preferences.'],
+  ['profile','20','User profile','Preferences, security, support, log out.'],
+  ['settings','21','Settings & appearance','Theme, currency, concept biometrics, accessibility.']]],
+ ['Empty, success & error states','Screen 22: every empty state points to a next action',[
+  ['empty','22a','No transactions yet','First-run state with primary action.'],
+  ['empty-2','22b','Empty search · no budget · no goals','Inline empty components.'],
+  ['feedback','22c','Invalid input · success · sync error · loading','Feedback patterns and skeletons.']]]
+];
+const TITLES={};LIST.forEach(g=>g[2].forEach(([id,n,t])=>TITLES[id]=n+' · '+t));
+
+/* ============ RENDER ============ */
+function phoneHTML(id,dark){const keep=S;S=JSON.parse(JSON.stringify(S0));PROTO=false;const h=SCR[id]();S=keep;return `<div class="phone app ${dark?'dk':''}" inert>${h}</div>`;}
+function gallery(){const g=document.getElementById('gallery');g.innerHTML=LIST.map(([t,s,items])=>`<div class="group-title"><h3>${t}</h3><span>${s}</span></div><div class="gallery">${items.map(([id,n,tt,cap])=>`<figure class="shot" style="margin:0"><div class="pw" tabindex="0" role="button" data-open="${id}" aria-label="Open ${tt} in the prototype">${phoneHTML(id)}</div><figcaption><span class="num">${n}</span><span class="ttl">${tt}</span><span class="cap">${cap}</span></figcaption></figure>`).join('')}</div>`).join('');
+ document.getElementById('darkGallery').innerHTML=[['home','06','Home'],['analytics','11','Analytics'],['transactions','09','Transactions'],['budget','13','Budget'],['profile','20','Profile'],['goals','15','Savings goals']].map(([id,n,t])=>`<figure class="shot" style="margin:0"><div class="pw" tabindex="0" role="button" data-open="${id}" data-dark="1" aria-label="Open ${t} in dark mode">${phoneHTML(id,true)}</div><figcaption><span class="num">${n} · DARK</span><span class="ttl">${t}</span></figcaption></figure>`).join('');
+ document.getElementById('heroPhones').innerHTML=`<div class="pw" data-open="home" tabindex="0" role="button" aria-label="Open Home in the prototype">${phoneHTML('home')}</div><div class="pw" data-open="analytics" data-dark="1" tabindex="0" role="button" aria-label="Open Analytics in dark mode">${phoneHTML('analytics',true)}</div>`;}
+/* prototype */
+let cur='home',timer=null,toastT=null;
+const SPEC={
+ splash:['Auto-advances to onboarding after 1.6 s (logo scales in, loader loops).'],
+ onb1:['Continue → next step; Skip → Sign in.','Page indicator shows position (shape + colour).'],onb2:['Continue → step 3; Skip → Sign in.'],onb3:['Get Started → Create account; secondary → Sign in.'],
+ signin:['Eye button toggles password visibility.','Clear the email (or make it invalid) and press Sign in to see validation.','“Create account” switches the form; Google/OTP are concept-only.'],
+ 'signin-error':['Static error state: field-level messages plus a summary banner.'],
+ home:['Week / Month switches the chart data.','Tap any bar for its exact value (tooltip).','Quick actions open Add expense, Add income, Analytics.','Tap a transaction for details; bell opens Notifications; budget card opens Budget.'],
+ 'add-expense':['Type on the keypad: the amount updates live.','Pick a category chip.','Save with ₹0 shows an inline error; a valid amount shows the confirmation.','Expense/Income switch swaps forms.'],
+ 'expense-saved':['Done returns Home with a success toast; “Add another” resets the form.'],
+ 'add-income':['Choose a source chip; toggle the monthly reminder; Save shows a toast on Home.'],
+ transactions:['Type in search to filter (try “zomato”, “food”, “groceries”).','All / Expenses / Income filters the list.','Tap a row for details.'],
+ txn:['Delete opens a confirmation dialog; Delete again removes it with an undo toast.','Edit opens the expense form.'],'txn-delete':['Cancel closes; Delete confirms.'],
+ analytics:['Tap a month point to read its value.','Category card opens the full breakdown; insights card opens Insights.'],
+ categories:['Each row shows share, amount and change vs the same dates in October.'],
+ budget:['Budget / Goals / Bills tabs switch within Plan.','Tap a category to edit its limit.'],
+ 'budget-edit':['Pick category, quick limit, period and alert threshold: the helper text updates.','Save returns to Budget with a toast.'],
+ goals:['New goal opens the form.'],'goal-new':['Pick an icon (updates the preview ring).','Save goal returns with a toast.'],
+ bills:['Reminder-only design: “Mark as paid” is manual.'],
+ insights:['Each card links to the screen that lets you act on it.'],
+ notifications:['All / Unread filter; settings icon opens preferences.'],
+ profile:['Rows open Settings or Notifications; Log out returns to Sign in.'],
+ settings:['Appearance → Dark switches the whole prototype to dark mode.','All toggles are live.'],
+ empty:['Primary action opens Add expense.'],'empty-2':['Actions open the relevant create forms.'],feedback:['Reference states for validation, success, sync error, loading.']};
+const FLOWS=[['Onboard → sign in','splash'],['Add an expense','add-expense'],['Review analytics','analytics'],['Edit a budget','budget-edit'],['Create a goal','goal-new'],['Delete a transaction','txn'],['Switch to dark','settings']];
+function renderProto(anim){const ph=document.getElementById('protoPhone');PROTO=true;ph.classList.toggle('dk',S.dark);ph.innerHTML=SCR[cur]();PROTO=false;if(anim){const s=ph.querySelector('.scr');s&&s.classList.add('anim-in');}
+ document.getElementById('protoTitle').textContent=TITLES[cur]||cur;document.getElementById('jump').value=cur;
+ document.getElementById('protoSpec').innerHTML=(SPEC[cur]||[]).map(x=>`<li>${x}</li>`).join('');
+ document.getElementById('themeL').setAttribute('aria-pressed',String(!S.dark));document.getElementById('themeD').setAttribute('aria-pressed',String(S.dark));
+ document.querySelectorAll('#flowBtns button').forEach(b=>b.classList.toggle('cur',b.dataset.f===cur));}
+function go(id){if(!SCR[id])return;clearTimeout(timer);if(id!=='txn')S.dialog=false;cur=id;if(id==='add-expense'){S.amtErr=false;}renderProto(true);const s=document.querySelector('#protoPhone .scr');if(s)s.scrollTop=0;if(id==='splash')timer=setTimeout(()=>{if(cur==='splash')go('onb1');},1600);}
+function toast(msg,type='ok',undo=false){S.toast={msg,type,undo};renderProto(false);clearTimeout(toastT);toastT=setTimeout(()=>{S.toast=null;renderProto(false);},4000);}
+function protoClick(e){const el=e.target.closest('[data-go],[data-set],[data-tog],[data-act],[data-key],[data-bar],[data-pt],[data-tx]');if(!el)return;const d=el.dataset;
+ if(d.set){const [k,v]=d.set.split(':');if(k==='thr')S.thr=+v;else S[k]=v;if(k==='appear')S.dark=v==='Dark';if(k==='cat')S.amtErr=false;if(k==='filter'||k==='ntab'){}
+  if(!d.go){renderProto(false);return;}}
+ if(d.go){if(d.go==='home'&&cur==='expense-saved'){go('home');toast('Expense saved · '+inr(+S.amount||0)+' added to '+CAT[S.cat].n,'ok',true);return;}if(d.go==='add-expense'&&cur==='expense-saved'){S.amount='';}go(d.go);return;}
+ if(d.tog){S.tog[d.tog]=!S.tog[d.tog];renderProto(false);return;}
+ if(d.bar!=null){S.bar=+d.bar;renderProto(false);return;}
+ if(d.pt!=null){S.pt=+d.pt;renderProto(false);return;}
+ if(d.tx){S.txId=d.tx;go('txn');return;}
+ if(d.key){let a=S.amount;const k=d.key;if(k==='del')a=a.slice(0,-1);else if(k==='.'){if(!a.includes('.'))a=(a||'0')+'.';}else{if(a.includes('.')&&a.split('.')[1].length>=2)return;if(a.replace('.','').length>=8)return;a=(a==='0'?'':a)+k;}S.amount=a;S.amtErr=false;renderProto(false);return;}
+ if(d.act){const a=d.act;
+  if(a==='pwd'){S.pwd=!S.pwd;renderProto(false);return;}
+  if(a==='signin'){const em=(document.getElementById('p-email')||{}).value||'';const pw=(document.getElementById('p-pwd')||{}).value||'';const ok=/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)&&pw.length>=8;if(!ok){S.signErr=true;renderProto(false);return;}S.signErr=false;go('home');return;}
+  if(a==='save-expense'){if(!(+S.amount>0)){S.amtErr=true;renderProto(false);return;}go('expense-saved');return;}
+  if(a==='save-income'){go('home');toast('Income saved · ₹65,000 from Salary');return;}
+  if(a==='delete-open'){S.dialog=true;renderProto(false);return;}
+  if(a==='delete-cancel'){S.dialog=false;renderProto(false);return;}
+  if(a==='delete-confirm'){const t=TX.find(x=>x.id===S.txId);S.dialog=false;go('transactions');toast('Deleted '+t.m+' · '+sgn(t.a),'ok',true);return;}
+  if(a==='save-budget'){go('budget');toast(CAT[S.bcat].n+' budget saved · '+inr(+S.limit)+' with alert at '+S.thr+'%');return;}
+  if(a==='save-goal'){go('goals');toast('Goal “New Phone” created · save ₹5,778/month');return;}
+  if(a==='clearq'){S.q='';renderProto(false);return;}}}
+function initProto(){const ph=document.getElementById('protoPhone');ph.addEventListener('click',protoClick);
+ ph.addEventListener('input',e=>{if(e.target.id==='p-search'){S.q=e.target.value;const pos=e.target.selectionStart;renderProto(false);const i=document.getElementById('p-search');if(i){i.focus();i.setSelectionRange(pos,pos);}}});
+ ph.addEventListener('submit',e=>e.preventDefault());
+ const j=document.getElementById('jump');j.innerHTML=LIST.map(([t,,items])=>`<optgroup label="${t}">${items.map(([id,n,tt])=>`<option value="${id}">${n} · ${tt}</option>`).join('')}</optgroup>`).join('');
+ j.addEventListener('change',()=>{S.dialog=false;go(j.value);});
+ document.getElementById('themeL').onclick=()=>{S.dark=false;S.appear='Light';renderProto(false);};
+ document.getElementById('themeD').onclick=()=>{S.dark=true;S.appear='Dark';renderProto(false);};
+ document.getElementById('protoReset').onclick=()=>{S=JSON.parse(JSON.stringify(S0));go('splash');};
+ document.getElementById('flowBtns').innerHTML=FLOWS.map(([l,id])=>`<button data-f="${id}">${l}</button>`).join('');
+ document.getElementById('flowBtns').addEventListener('click',e=>{const b=e.target.closest('button');if(b){S.dialog=false;go(b.dataset.f);}});
+ renderProto(false);}
+function openFrom(el){const id=el.dataset.open;S.dark=!!el.dataset.dark;S.appear=S.dark?'Dark':'Light';S.dialog=id==='txn-delete';const target=id==='txn-delete'?'txn':id;document.getElementById('prototype').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});go(target);if(id==='txn-delete'){S.dialog=true;renderProto(false);}if(id==='signin-error'){S.signErr=true;renderProto(false);}}
+document.addEventListener('click',e=>{const el=e.target.closest('[data-open]');if(el)openFrom(el);});
+document.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.matches&&e.target.matches('[data-open]')){e.preventDefault();openFrom(e.target);}});
+
+/* ============ DESIGN SYSTEM DOC ============ */
+function ds(){const tokens=[
+ ['Brand',[['primary','#635BFF','#7C75FF'],['primary-dark','#473CE3','#5B52F0'],['accent','#AFA8FF','#AFA8FF'],['tint','#EEEDFF','#25224A']]],
+ ['Surface & text',[['canvas','#F8F9FD','#0B0D1A'],['surface','#FFFFFF','#151829'],['surface-alt','#F1F2F8','#1E2238'],['border','#E9EBF3','#262A44'],['text/primary','#15172C','#F2F3FA'],['text/secondary','#6E768C','#A1A8BE'],['text/brand','#473CE3','#B4AFFF']]],
+ ['Status',[['success','#18B987','#2FD39E'],['success-text','#0B7D59','#4BE0AE'],['error','#F06D73','#FF8A8F'],['error-text','#C9434A','#FF9CA0'],['warning','#F5B84B','#F7C66A'],['warning-text','#9A6A12','#F7C66A']]],
+ ['Categories',[['food','#FF8A4C','#FF9A63'],['shopping','#E25DB0','#EE74C0'],['transport','#3BA3F5','#5AB3F7'],['bills','#635BFF','#8C86FF'],['entertainment','#9B5CF6','#AD78F8'],['health','#18B987','#2FD39E'],['education','#E0A23A','#F7C66A'],['other','#8A91A6','#9AA1B8']]]];
+ const sw=tokens.map(([g,l])=>`<div class="doc"><h3>${g}</h3><div class="swatches">${l.map(([n,a,b])=>`<div class="sw"><div class="c"><span style="background:${a}"></span><span style="background:${b}"></span></div><div class="m"><b>${n}</b><code>${a} · ${b}</code></div></div>`).join('')}</div><p style="font-size:12px">Left half light, right half dark.</p></div>`).join('');
+ const type=[['Display','38/46 ExtraBold','₹84,250.00','t-display'],['H1','28/36 Bold','Good morning, Aarav','t-h1'],['H2','22/30 Bold','Spending overview','t-h2'],['H3','18/26 SemiBold','Recent transactions','t-h3'],['Body L','16/24 Regular','Track every rupee without the spreadsheet.','t-bl'],['Body','14/21 Regular','You spent 12% less on food than last month.','t-b'],['Caption','12/16 Medium','23 Nov 2026 · 1:12 pm','t-cap'],['Button','15/20 SemiBold','Save expense','t-bs'],['Amount L','24/32 Bold tabular','₹1,00,000','amt-l']];
+ const comp=`<div class="showcase app" style="background:var(--bg)"><div class="scgrid">
+  <div><span class="lab">Buttons · default / pressed / disabled / loading</span><button class="btn pri" tabindex="-1">Save expense</button><button class="btn pri" style="background:var(--prd)" tabindex="-1">Pressed</button><span class="btn dis">Disabled</span><span class="btn pri"><span class="spin"></span>Saving…</span></div>
+  <div><span class="lab">Secondary · tertiary · destructive</span><button class="btn sec" tabindex="-1">Edit budget</button><button class="btn ter" tabindex="-1">I already have an account</button><button class="btn des" tabindex="-1">Delete</button><button class="btn sec sm" tabindex="-1">${ic('plus','s18')}Small</button></div>
+  <div><span class="lab">Text input · default / focus / error</span><div class="field"><span class="lbl">Email address</span><div class="inp">${ic('mail','s20')}<span class="v c2">name@example.com</span></div></div><div class="inp focus">${ic('mail','s20')}<span class="v">aarav.sharma@email.com</span></div><div class="field"><div class="inp err">${ic('alert','s20')}<span class="v">aarav.sharma@</span></div><span class="help err">${ic('alert','s16')}Enter a full email address</span></div></div>
+  <div><span class="lab">Search · amount · dropdown · date</span><div class="inp" style="height:48px">${ic('search','s20')}<span class="v c2">Search merchants or notes</span></div><div class="inp" style="height:64px"><span class="amt-l c2">₹</span><span class="amt-l v">5,500</span></div><div class="inp"><span class="v">Monthly</span>${ic('chevron-down','s18')}</div><div class="inp">${ic('calendar','s20')}<span class="v">31 Aug 2027</span></div></div>
+  <div><span class="lab">Segmented · chips · toggles · checkbox</span><div class="seg"><button class="on" tabindex="-1">Week</button><button tabindex="-1">Month</button></div><div class="row" style="gap:8px;flex-wrap:wrap"><span class="chip on">${tile('food')}Food</span><span class="chip">${tile('transport')}Transport</span></div><div class="row" style="gap:12px"><span class="tog on"><i></i></span><span class="tog"><i></i></span><span class="tog" style="opacity:.4"><i></i></span><span style="width:22px;height:22px;border-radius:6px;background:var(--pr);display:grid;place-items:center;color:#fff">${ic('check','s16')}</span><span style="width:22px;height:22px;border-radius:6px;border:1.5px solid var(--bd2)"></span></div></div>
+  <div><span class="lab">Category tiles</span><div class="row" style="flex-wrap:wrap;gap:8px">${CATKEYS.map(k=>tile(k)).join('')}${tile('income')}${tile('savings')}</div><span class="lab">Status pills</span><div class="row" style="flex-wrap:wrap;gap:6px"><span class="pill ok">On track</span><span class="pill br">Watch</span><span class="pill wn">Near limit</span><span class="pill er">Over limit</span></div></div>
+  <div><span class="lab">Transaction item · default / pressed</span><div class="list">${txRow(TX[0])}<div style="background:var(--sf2);border-radius:14px">${txRow(TX[12])}</div></div><span class="lab">Skeleton</span><div class="row" style="gap:12px"><span class="skel" style="width:44px;height:44px;border-radius:14px"></span><span class="col grow" style="gap:8px"><span class="skel" style="width:70%;height:12px"></span><span class="skel" style="width:45%;height:10px"></span></span></div></div>
+  <div><span class="lab">Budget progress card</span><div class="card" style="padding:16px;gap:10px"><div class="row" style="gap:12px">${tile('shopping','sm')}<span class="col grow"><span class="t-bs">Shopping</span><span class="t-cap c2">₹4,120 of ₹5,500</span></span><span class="pill br">Watch</span></div>${bar(74.9,'var(--c-shopping)')}</div><span class="lab">Chart tooltip</span><div style="position:relative;height:64px"><div class="tip" style="left:60px;top:52px">Wed, 18 Nov<b>₹1,450</b></div></div></div>
+  <div><span class="lab">Toast · dialog</span><div class="toast" style="position:static;animation:none"><span class="ti" style="background:var(--ok)">${ic('check','s16')}</span><span class="grow">Expense saved</span><b>Undo</b></div><div class="dialog" style="width:auto;animation:none;padding:20px"><h3 class="t-h3">Delete this transaction?</h3><div class="row" style="gap:10px;width:100%"><span class="btn sec sm grow" style="width:100%">Cancel</span><span class="btn des sm grow" style="width:100%">Delete</span></div></div></div>
+  <div><span class="lab">Bottom sheet</span><div style="position:relative;height:180px;background:var(--sf2);border-radius:20px;overflow:hidden"><div class="sheet" style="padding:12px 20px 20px"><div class="grab"></div><span class="t-h3">Paid with</span><div class="row" style="gap:8px;margin-top:10px;flex-wrap:wrap"><span class="chip on plain">UPI</span><span class="chip plain">Card</span><span class="chip plain">Cash</span></div></div></div></div>
+  <div><span class="lab">Notification item · unread / read</span><div class="row" style="align-items:flex-start;gap:12px;padding:14px;border-radius:16px;background:var(--sf);border:1px solid var(--bd)">${tile('shopping','sm')}<span class="col grow"><span class="t-bs" style="font-weight:700">75% through Shopping</span><span class="t-cap c2">2h ago</span></span><span style="width:8px;height:8px;border-radius:4px;background:var(--pr);flex:none"></span></div><div class="row" style="align-items:flex-start;gap:12px;padding:14px">${tile('savings','sm')}<span class="col grow"><span class="t-bs">Emergency Fund hit 65%</span><span class="t-cap c2">Yesterday</span></span></div></div>
+  <div><span class="lab">Empty state</span><div class="card" style="padding:16px"><div class="empty"><div class="illus" style="width:72px;height:72px">${ic('note','s28')}</div><span class="t-bs">No transactions yet</span><span class="btn pri sm">Add expense</span></div></div></div>
+ </div><div><span class="lab">Bottom navigation</span><div style="position:relative;height:96px;border-radius:16px;overflow:hidden;margin-top:10px;max-width:390px;transform:translateZ(0)">${nav('home').replace('<div class="homebar"></div>','')}</div></div></div>`;
+ const names=`<div class="doc"><h3>Component naming</h3><p>Sets use <code>Component / Variant</code> naming with properties, e.g. <b>Button</b> (Variant = Primary | Secondary | Tertiary | Destructive × State = Default | Pressed | Disabled | Loading), <b>Text Input</b> (State = Default | Focused | Filled | Error | Disabled), <b>Bottom Navigation</b> (Active = Home | Analytics | Budget | Profile), <b>Category Tile</b> (Category = Food … Savings), <b>Transaction Item</b> (Type × State), <b>Toast</b> (Type = Success | Error | Info), <b>Notification Item</b> (State = Unread | Read), plus Status Bar, Search Field, Segmented Control / Item, Toggle, Checkbox, Chip, Progress Bar, Dialog / Confirm Delete, Chart Tooltip, Skeleton / Transaction, Empty State and Logo/*. Icons are <b>Icon/&lt;name&gt;</b> components, 24 px, 1.8 stroke.</p></div>`;
+ const spacing=`<div class="doc"><h3>Spacing, radius, layout</h3><ul><li>8-pt system: 4, 8, 12, 16, 20, 24, 32, 40, 48.</li><li>Page margins 24 px; card padding 16–20 px; section gap 20–24 px.</li><li>Radius: 8 (sm), 12 (md), 16 (buttons, list cards), 20–24 (cards, sheets), full (pills).</li><li>Frame 390 × 844; safe-area aware status bar (47 px) and nav (96 px incl. home indicator).</li><li>Touch targets ≥ 44 × 44 px; primary actions 52 px tall in the bottom third.</li><li>Elevation: Card (0 4 24 / 6%), Raised (indigo 0 12 28 / 30%), Sheet (0 −8 40 / 16%).</li></ul></div>`;
+ document.getElementById('dsRoot').innerHTML=`<div class="docgrid">${sw}</div>
+ <div class="doc"><h3>Typography · Plus Jakarta Sans</h3><div style="display:grid;gap:14px">${type.map(([n,m,s,c])=>`<div style="display:grid;grid-template-columns:minmax(110px,160px) 1fr;gap:16px;align-items:baseline;min-width:0"><div><b style="font-size:14px">${n}</b><div style="font-size:12px;color:var(--muted)">${m}</div></div><div class="${c}" style="color:var(--ink);min-width:0;overflow-wrap:anywhere">${s}</div></div>`).join('')}</div><p>Amounts always use ₹ with Indian grouping (₹1,00,000), tabular figures, and an explicit + / − sign so direction never depends on colour alone.</p></div>
+ ${comp}<div class="docgrid">${names}${spacing}</div>`;}
+
+/* ============ CASE STUDY ============ */
+function caseStudy(){const wf=(name,note,rows)=>`<div><div class="wf">${rows}</div><div class="wfcap">${name}</div><div class="wfnote">${note}</div></div>`;
+ const navWF='<div class="nv"><i></i><i></i><i class="c"></i><i></i><i></i></div>';
+ document.getElementById('caseRoot').innerHTML=`
+ <div class="docgrid">
+  <div class="doc span2"><p class="eyebrow">01 · Cover &amp; overview</p><h3>FINOVA: a calmer way for young Indians to see their money</h3><p>Finova helps 18–35-year-olds log spending in seconds, understand patterns through clear visuals, and act through budgets, goals and bill reminders. It is deliberately manual (no bank linking) to lower the trust barrier and to make every entry a moment of awareness.</p><div class="tagrow"><span class="tag">Role: UI/UX designer (solo)</span><span class="tag">Platform: iOS/Android, 390 × 844</span><span class="tag">Deliverable: interactive HTML prototype</span><span class="tag">Market: India (₹), globally adaptable</span></div></div>
+  <div class="doc"><p class="eyebrow">02 · Problem statement</p><h3>Spending became invisible</h3><p>UPI and card payments take a second and leave no physical trace. Young adults managing an allowance or a first salary often discover overspending only at month-end. Bank apps list transactions but don’t explain them; budgeting apps feel like accounting and many ask for bank credentials, which first-time budgeters don’t trust.</p><p><b>How might we</b> help young adults notice and steer their spending during the month, with less effort than a spreadsheet and without asking for bank access?</p></div>
+ </div>
+ <div class="docgrid">
+  <div class="doc"><h3>Design objectives (measurable)</h3><ol><li>Log an expense from Home in <b>≤ 4 taps and ≤ 10 s</b>.</li><li>Users state their <b>remaining monthly budget within 5 s</b> of opening Home.</li><li>Users identify their <b>top spending category in ≤ 15 s</b> from Analytics.</li><li><b>≥ 80% unassisted success</b> creating a budget and a savings goal.</li><li>System Usability Scale target <b>≥ 75</b> across 5+ testers.</li><li>All text meets <b>WCAG 2.2 AA</b> contrast in both themes.</li></ol></div>
+  <div class="doc"><h3>Key assumptions to validate</h3><ul><li>Manual entry is acceptable if it takes under 10 seconds.</li><li>Users trust an app more when it never asks for bank login.</li><li>Month-to-date “left to spend” matters more than lifetime totals.</li><li>Plain-language insights are more actionable than raw charts.</li><li>Bill reminders are valued even without auto-pay.</li></ul><p style="font-size:12px">These are hypotheses for the usability study, not findings.</p></div>
+ </div>
+ <div class="docgrid">
+  ${[['PN','#E25DB0','Priya Nair, 20','B.Com student, Pune · ₹12,000/month allowance + ₹3,000 tutoring',['Make the allowance last until the 30th','Save ₹8,000 for a trip with friends'],['UPI makes small spends feel free','Tried a spreadsheet, gave up in a week','Runs short around the 25th'],['5-second logging between classes','A weekly view, not just monthly','Gentle warnings, no lectures'],'After a ₹180 café visit she logs it in two taps while walking back to class, and sees she has ₹2,100 left for food this week.'],
+    ['AS','#635BFF','Aarav Sharma, 26','Associate product analyst, Bengaluru · ₹65,000 monthly take-home',['Build a ₹1,00,000 emergency fund','Buy a new laptop by mid-2027','Rein in food delivery'],['Bank apps show transactions, not meaning','Budget apps feel like accounting','Won’t share bank logins with a third-party app'],['Month-to-date picture at a glance','Category budgets with early alerts','Bill reminders, no auto-pay surprises'],'Sunday evening he opens Analytics, sees transport up 27%, and sets an 80% alert on his transport budget.']].map(([i,c,n,r,g,f,nd,sc])=>`<div class="doc"><div class="persona"><div class="pav" style="background:${c}">${i}</div><div><h3>${n}</h3><p>${r}</p></div></div><h4>Goals</h4><ul>${g.map(x=>`<li>${x}</li>`).join('')}</ul><h4>Frustrations</h4><ul>${f.map(x=>`<li>${x}</li>`).join('')}</ul><h4>Needs</h4><ul>${nd.map(x=>`<li>${x}</li>`).join('')}</ul><h4>Scenario</h4><p>${sc}</p></div>`).join('')}
+ </div>
+ <p class="note">Proto-personas, built from assumptions and the brief. Validate them with 5–8 short interviews before treating them as research.</p>
+ <div><h3 style="font-size:20px;margin-bottom:12px">User journey: from “where did my money go?” to a budget</h3><div class="tbl"><table><thead><tr><th></th><th>1 · Realise</th><th>2 · Discover</th><th>3 · Onboard</th><th>4 · Track</th><th>5 · Review</th><th>6 · Budget</th></tr></thead><tbody>
+  <tr><td><b>Doing</b></td><td>Checks bank balance on the 24th; lower than expected</td><td>Searches for a simple tracker; reads reviews</td><td>Installs Finova, skims 3 steps, signs up with email</td><td>Logs spends after paying with UPI</td><td>Opens Analytics on Sunday</td><td>Sets category limits and an alert</td></tr>
+  <tr><td><b>Thinking</b></td><td>“Where did it all go?”</td><td>“Will it want my bank password?”</td><td>“Is this going to be a chore?”</td><td>“That was fast.”</td><td>“Food is my biggest leak… or is it bills?”</td><td>“₹1,650 a day is a number I can work with.”</td></tr>
+  <tr><td><b>Feeling</b></td><td>Anxious</td><td>Sceptical</td><td>Cautiously hopeful</td><td>In control</td><td>Curious, surprised</td><td>Confident</td></tr>
+  <tr><td><b>Pain points</b></td><td>No mid-month signal</td><td>Trust, data privacy</td><td>Long sign-up forms</td><td>Forgetting to log</td><td>Charts without meaning</td><td>Unrealistic limits</td></tr>
+  <tr><td><b>Finova answer</b></td><td>Home shows “₹11,550 left · 7 days”</td><td>“No bank login needed” on step 1</td><td>3 steps, 2-field sign-in, skip</td><td>Keypad-first Add, entry reminders</td><td>Insights in plain language with evidence</td><td>Limit hints from last month’s spending</td></tr>
+ </tbody></table></div></div>
+ <div class="docgrid">
+  <div class="doc"><p class="eyebrow">03 · Information architecture</p><h3>Five destinations, shallow depth</h3><div class="ia">Launch
+├─ Splash → Onboarding (3) → Sign in / Create account
+└─ App (bottom navigation)
+   ├─ Home
+   │  ├─ Balance · quick actions · spending chart · budget · recent
+   │  ├─ Transactions → Transaction details → Edit / Delete
+   │  └─ Notifications (bell)
+   ├─ Analytics
+   │  ├─ Spending by category
+   │  └─ Smart insights
+   ├─ Add (primary action)
+   │  ├─ Expense → Saved confirmation
+   │  └─ Income
+   ├─ Budget (“Plan”)
+   │  ├─ Monthly budget → Create / edit budget
+   │  ├─ Savings goals → Create goal
+   │  └─ Recurring bills
+   └─ Profile
+      ├─ Settings &amp; appearance
+      ├─ Security · Help · Export (concept)
+      └─ Log out</div><p>Every screen is at most 2 taps from a tab. Budget, Goals and Bills share one tab with a segmented switch, because users think of them together as “planning”.</p></div>
+  <div class="doc"><h3>User flows</h3>
+   ${[['Onboarding &amp; account',['Splash','Track','Understand','Goals','Create account','Home'],'Skip jumps straight to Sign in.'],['Add an expense',['Home','+ Add','Type amount','Pick category','Save','Saved + budget impact','Home + toast (Undo)'],'Merchant, date, method and note are pre-filled and optional.'],['Review monthly analytics',['Analytics tab','Summary','Tap a month point','By category','Category detail','Insight → action'],null],['Create a budget',['Budget tab','+ New','Category','Limit (hint: last month)','Period','Alert at 80%','Save'],null],['Create a savings goal',['Plan · Goals','+ New goal','Icon','Name','Target + saved','Date','Monthly pace shown','Save'],null]].map(([t,s,n])=>`<h4>${t}</h4><div class="flow">${s.map((x,i)=>`${i?'<em>→</em>':''}<span>${x}</span>`).join('')}</div>${n?`<p style="font-size:13px">${n}</p>`:''}`).join('')}
+  </div>
+ </div>
+ <div><p class="eyebrow">04 · Low-fidelity wireframes</p><h3 style="font-size:20px;margin:6px 0 14px">Structure before style</h3><div class="wfgrid">
+  ${wf('Home','Balance first, then actions, chart, budget, recent','<i style="height:10px;width:50%"></i><i class="k" style="height:92px"></i><div class="r"><i class="o" style="height:40px;flex:1"></i><i class="o" style="height:40px;flex:1"></i><i class="o" style="height:40px;flex:1"></i><i class="o" style="height:40px;flex:1"></i></div><i style="height:80px"></i><i style="height:34px"></i><i style="height:14px;width:70%"></i><i style="height:14px;width:60%"></i>'+navWF)}
+  ${wf('Add expense','Amount hero, categories, details grid, keypad at thumb','<i style="height:12px;width:40%;margin:0 auto"></i><i class="o" style="height:22px"></i><i class="k" style="height:38px;width:60%;margin:6px auto"></i><div class="r"><i class="o" style="height:22px;flex:1"></i><i class="o" style="height:22px;flex:1"></i><i class="o" style="height:22px;flex:1"></i></div><div class="r"><i style="height:30px;flex:1"></i><i style="height:30px;flex:1"></i></div><div class="r"><i style="height:30px;flex:1"></i><i style="height:30px;flex:1"></i></div><i class="k" style="height:28px;margin-top:auto"></i><i style="height:96px"></i>')}
+  ${wf('Transactions','Search + filter, segmented type, grouped list','<i style="height:12px;width:45%"></i><div class="r"><i class="o" style="height:26px;flex:1"></i><i class="o" style="height:26px;width:26px"></i></div><i style="height:22px"></i><i style="height:8px;width:30%"></i><i style="height:26px"></i><i style="height:26px"></i><i style="height:8px;width:30%"></i><i style="height:26px"></i><i style="height:26px"></i><i style="height:26px"></i>'+navWF)}
+  ${wf('Analytics','Summary → trend → categories → insights','<i style="height:12px;width:45%"></i><i class="k" style="height:56px"></i><i style="height:96px"></i><div class="r"><i class="o" style="height:64px;width:64px;border-radius:50%"></i><div style="flex:1;display:grid;gap:6px"><i style="height:8px"></i><i style="height:8px"></i><i style="height:8px"></i></div></div><div class="r"><i style="height:40px;flex:1"></i><i style="height:40px;flex:1"></i></div>'+navWF)}
+  ${wf('Budget','Overall ring, safe-to-spend, category cards','<i style="height:12px;width:30%"></i><i class="o" style="height:22px"></i><div class="r"><i class="o" style="height:56px;width:56px;border-radius:50%"></i><div style="flex:1;display:grid;gap:6px"><i style="height:8px"></i><i style="height:8px"></i><i style="height:8px"></i></div></div><i style="height:22px"></i><i style="height:36px"></i><i style="height:36px"></i><i style="height:36px"></i>'+navWF)}
+  ${wf('Savings goals','Total card, goal cards with ring + bar','<i style="height:12px;width:30%"></i><i class="o" style="height:22px"></i><i class="k" style="height:60px"></i><i style="height:58px"></i><i style="height:58px"></i><i style="height:58px"></i>'+navWF)}
+ </div></div>`;}
+
+/* ============ TESTING & RATIONALE ============ */
+function testing(){document.getElementById('testRoot').innerHTML=`
+ <div class="tbl"><table><thead><tr><th>Principle</th><th>Decision</th><th>Where you see it</th></tr></thead><tbody>
+  <tr><td><b>Jakob’s Law</b></td><td>Standard 5-tab bottom navigation, back chevron top-left, list rows with icon–title–amount, bottom sheets for pickers.</td><td>Every tab screen · 09 Transactions · 14 Edit budget</td></tr>
+  <tr><td><b>Hick’s Law</b></td><td>Only four quick actions on Home; Add shows amount + category first and hides merchant/date/method/note behind pre-filled tiles.</td><td>06 Home · 07 Add expense</td></tr>
+  <tr><td><b>Fitts’s Law</b></td><td>Central 48 px Add button in the thumb zone; keypad and Save sit in the bottom third; all targets ≥ 44 px.</td><td>Bottom nav · 07 Add expense</td></tr>
+  <tr><td><b>Gestalt</b></td><td>Proximity groups transactions by day with a day total; common region (cards) separates balance, chart, budget; similarity: category colour + icon repeat everywhere.</td><td>09 Transactions · 06 Home · 12 Categories</td></tr>
+  <tr><td><b>Progressive disclosure</b></td><td>Analytics shows a summary and top 4 categories; the full 8-category breakdown and insights are one tap deeper.</td><td>11 → 12, 11 → 18</td></tr>
+  <tr><td><b>Recognition over recall</b></td><td>Labels stay above fields; categories have icon + name; limit form shows last month’s spend as a reference.</td><td>05 Sign in · 14 Edit budget</td></tr>
+  <tr><td><b>Error prevention</b></td><td>Numeric-only keypad, ₹0 blocked with inline message, delete needs confirmation and offers Undo, dates in the past rejected.</td><td>07 · 10b · 22c</td></tr>
+  <tr><td><b>Feedback</b></td><td>Saved screen with budget impact, toasts, skeleton loading, saving spinner on buttons.</td><td>07b · 22c</td></tr>
+  <tr><td><b>Consistency</b></td><td>One token set and component library; dark mode is a token swap.</td><td>Design system · 07 Dark mode</td></tr>
+ </tbody></table></div>
+ <div class="docgrid">
+  <div class="doc"><h3>Layout</h3><p>Home answers three questions in order: <b>How much do I have? How am I spending? What’s left?</b> The balance card explains its own maths (opening + net) so it is never confused with income minus expenses.</p></div>
+  <div class="doc"><h3>Typography</h3><p>Plus Jakarta Sans has open counters and distinct figures that stay legible at 12 px. Amounts use ExtraBold/Bold with tabular numbers so columns align; body copy stays Regular for calm reading.</p></div>
+  <div class="doc"><h3>Colour</h3><p>Electric Indigo signals the brand and primary actions only. Green and coral are reserved for money direction and status, always paired with a sign, label or icon. Secondary text was darkened to #6E768C to pass AA.</p></div>
+  <div class="doc"><h3>Navigation</h3><p>Add is the most frequent task, so it is the centre tab and the largest target. Budget, Goals and Bills live together under one “Plan” tab to keep five destinations.</p></div>
+  <div class="doc"><h3>Accessibility checklist</h3><ul><li>Text contrast ≥ 4.5:1 in both themes; large numbers ≥ 3:1.</li><li>Charts have text summaries and aria labels with every value.</li><li>Status never by colour alone (pills carry words; amounts carry +/−).</li><li>Labels on every field; errors say what to do.</li><li>Supports text scaling to 200% (cards stack, no fixed-height text).</li><li>Reduce-motion setting removes slides and pulses.</li></ul></div>
+  <div class="doc"><h3>Trust decisions</h3><ul><li>No bank sync is implied anywhere; onboarding says so.</li><li>Bills are reminders; “Mark as paid” is manual.</li><li>Google/OTP sign-in and biometrics are labelled “concept”.</li><li>Insights state they aren’t financial advice.</li></ul></div>
+ </div>
+ <h3 style="font-size:22px">Usability testing plan</h3>
+ <div class="docgrid">
+  <div class="doc"><h4>Setup</h4><ul><li>5–8 classmates (mix of students on allowance and people with a salary or stipend).</li><li>Moderated, 20 minutes each, think-aloud, on a phone using the prototype above.</li><li>Start every task from Home; reset with “Restart flow”.</li><li>Record: success, time on task, errors, assists, Single Ease Question (1–7).</li><li>Close with the 10-item System Usability Scale.</li></ul></div>
+  <div class="doc"><h4>Observation prompts</h4><ul><li>Where did they look first on Home?</li><li>Did they hesitate between Add expense and Adjust?</li><li>Did they understand what “Total balance” includes?</li><li>Did anyone try to swipe instead of tap?</li><li>What words did they use for “budget”, “goal”, “bill”?</li><li>Did any colour or icon mislead them?</li></ul></div>
+ </div>
+ <div class="tbl"><table><thead><tr><th>#</th><th>Task (read aloud)</th><th>Success criteria</th><th>Target</th></tr></thead><tbody>
+  <tr><td>1</td><td>“You just paid ₹180 for coffee using UPI. Record it.”</td><td>Expense saved as ₹180, category Food &amp; Drinks, no assist.</td><td>≤ 20 s, ≤ 4 taps after Add</td></tr>
+  <tr><td>2</td><td>“How much more can you spend this month without going over?”</td><td>Says ₹11,550 (or “about ₹1,650 a day”).</td><td>≤ 10 s</td></tr>
+  <tr><td>3</td><td>“Which category did you spend most on in November, and how is food compared with last month?”</td><td>Bills &amp; Utilities; food 12% lower.</td><td>≤ 30 s</td></tr>
+  <tr><td>4</td><td>“Set your Shopping limit to ₹5,000 and get an alert at 80%.”</td><td>Budget saved with ₹5,000 and 80% alert.</td><td>≤ 45 s, no errors</td></tr>
+  <tr><td>5</td><td>“Start saving for a new phone: ₹60,000 by August 2027.”</td><td>Goal created with correct target and date.</td><td>≤ 60 s</td></tr>
+ </tbody></table></div>
+ <div class="doc"><h3>Feedback collection template (one per participant)</h3>
+  <div class="docgrid" style="gap:12px">
+   ${['Participant ID / profile','Device used','Task 1 · success / time / SEQ','Task 2 · success / time / SEQ','Task 3 · success / time / SEQ','Task 4 · success / time / SEQ','Task 5 · success / time / SEQ','SUS score (0–100)','Most confusing moment (quote)','Most liked moment (quote)','What would make you use this daily?','Severity-rated issues (1 cosmetic – 4 blocker)'].map(f=>`<div style="display:grid;gap:6px"><span style="font-size:13px;font-weight:700">${f}</span><div class="field-blank">To fill in during the session</div></div>`).join('')}
+  </div>
+  <p>Results summary: <b>not yet collected.</b> Add success rates, median times and the top three issues here after testing, then iterate the affected screens.</p>
+ </div>`;}
+
+gallery();ds();caseStudy();testing();initProto();
+</script>
